@@ -59,16 +59,18 @@ def find_rows_with_color(pixels, width, height, color):
 
 if __name__ == "__main__":
 
-    # all_sd_names = [sd for sd in os.listdir('../train/XR_ELBOW') if
-    #                 os.path.isdir(os.path.join('../train/XR_ELBOW', sd))]
-    # count_sd = len([sd for sd in os.listdir('../train/XR_ELBOW') if
-    #                 os.path.isdir(os.path.join('../train/XR_ELBOW', sd))])
-    # list_files_sd = [len(files) for r,d, files in os.walk('../train/XR_ELBOW') if len(files) != 0]
-    # file_counter = list(Counter(list_files_sd).items())
-    # fig, ax = plt.subplots(figsize=(12,12))
-    # x = [file_counter[i][0] for i in range(len(file_counter))]
-    # y = [file_counter[i][1] for i in range(len(file_counter))]
+    all_sd_names = [sd for sd in os.listdir('MURA_images/train/XR_ELBOW') if
+                    os.path.isdir(os.path.join('../MURA_images/train/XR_ELBOW', sd))]
+    count_sd = len([sd for sd in os.listdir('MURA_images/train/XR_ELBOW') if
+                    os.path.isdir(os.path.join('MURA_images/train/XR_ELBOW', sd))])
+    list_files_sd = [len(files) for r,d, files in os.walk('MURA_images/train/XR_ELBOW') if len(files) != 0]
+    file_counter = list(Counter(list_files_sd).items())
+    
+    x = [file_counter[i][0] for i in range(len(file_counter))]
+    y = [file_counter[i][1] for i in range(len(file_counter))]
 
+    fig, ax = plt.subplots(figsize=(12,12))
+    plt.bar(x, y)
     # fig, ax = plt.subplts(figsize=(12,12))
     # ax
 
@@ -85,10 +87,10 @@ if __name__ == "__main__":
 
     # df['target'] = np.where(df['path'].str.contains('positive'), 1, 0)
 
-    for word in search_word_list:
-        find_and_sep_data('data/original_paths/train_image_paths.csv', 'path', word, info=0)
+    # for word in search_word_list:
+    #     find_and_sep_data('data/original_paths/train_image_paths.csv', 'path', word, info=0)
     
-    for word in search_word_list:
-        find_and_sep_data('data/original_paths/valid_image_paths.csv', 'path', word, info=1)
+    # for word in search_word_list:
+    #     find_and_sep_data('data/original_paths/valid_image_paths.csv', 'path', word, info=1)
 
           

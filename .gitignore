@@ -1,2 +1,4 @@
 /MURA_images
 /data/train_images
+/data/valid_images
+/data/cnn_models

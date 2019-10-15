@@ -29,5 +29,5 @@ def copy_move_files(path, target_dir):
             else:
                 continue
 if __name__ == "__main__":
-    copy_move_files('MURA_images/train/', 'data/train_images/')
-    copy_move_files('MURA_images/valid/', 'data/valid_images/')
+    # copy_move_files('MURA_images/train/', 'data/train_images/')
+    # copy_move_files('MURA_images/valid/', 'data/valid_images/')

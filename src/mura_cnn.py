@@ -18,6 +18,7 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.optimizers import Adam, SGD, RMSprop
 from tensorflow.keras.layers import PReLU, LeakyReLU
+from tensorflow.keras.callbacks import ModelCheckpoint
 
 from sklearn.metrics import classification_report, confusion_matrix, roc_curve
 from sklearn.model_selection import train_test_split
@@ -43,25 +44,26 @@ if __name__ == "__main__":
     model.add(Conv2D(32, (3, 3), input_shape=(img_width, img_height, 3),
                      padding='same'))
     model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(1, 1)))
+    model.add(Conv2D(32, (3, 3), input_shape=(img_width, img_height, 3),
+                padding='same'))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
 
     model.add(Conv2D(64, (3, 3), padding='same'))
     model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(1, 1)))
+    model.add(Conv2D(64, (3, 3), padding='same'))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
 
     model.add(Conv2D(128, (3, 3), padding='same'))
     model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(1, 1)))
+    # model.add(MaxPooling2D(pool_size=(2, 2)))
     
-    # model.add(Conv2D(256, (3, 3), padding='same'))
-    # model.add(Activation('relu'))
-    # model.add(MaxPooling2D(pool_size=(1, 1)))
+    model.add(Conv2D(128, (3, 3), padding='same'))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
 
     model.add(Flatten())
-    
-    # model.add(Dense(128))
-    # model.add(Activation('relu'))
-    # model.add(Dropout(0.2))
     
     model.add(Dense(64))
     model.add(Activation(LeakyReLU()))
@@ -70,6 +72,10 @@ if __name__ == "__main__":
     model.add(Dense(32))
     model.add(Activation(LeakyReLU()))
     model.add(Dropout(0.2))
+    
+#     model.add(Dense(32))
+#     model.add(Activation(LeakyReLU()))
+#     model.add(Dropout(0.2))
 
     model.add(Dense(1))
     model.add(Activation('sigmoid'))
@@ -78,13 +84,13 @@ if __name__ == "__main__":
     model.compile(loss='binary_crossentropy',optimizer=opt,
                 metrics=['accuracy', keras.metrics.Precision(), keras.metrics.Recall()])
     
-    # model.load_weights('7th_large_try.h5')         
-    model_name = 'first_model_32_32'
-    # model.save_weights('data/model_weights/7th_large_try.h5')
+    #model.load_weights('data/model_weights/best_model_so_far.h5')         
+    model_name = 'second_model_128'
+    model.save_weights('data/model_weights/'+model_name+'.h5')
     model.save('data/models/'+model_name+'.h5')
-    keras.callbacks.ModelCheckpoint('data/model_weights/'+model_name+'_best_epoch.h5', monitor='accuracy', verbose=1,
-                                    save_best_only=False, save_weights_only=True,
-                                    mode='auto', save_freq=1)
+#     callback = ModelCheckpoint('data/model_weights/'+model_name+'_best_epoch.h5', monitor='val_acc', verbose=1,
+#                                      save_best_only=True, save_weights_only=True,
+#                                      mode='auto', period=1)
 
 #     model.layers[0].get_weights()
 #     model.layers[1].get_weights()
@@ -130,7 +136,9 @@ if __name__ == "__main__":
     steps_per_epoch= nb_train_samples // batch_size,
     epochs=epochs,
     validation_data=validation_generator,
-    validation_steps=nb_validation_samples // batch_size)
+    validation_steps=nb_validation_samples // batch_size
+#     callbacks = [callback]
+    )
 
     validation_generator.class_indices
     
@@ -149,7 +157,7 @@ if __name__ == "__main__":
     ax[1].plot(history.history['val_accuracy'], label='test')
     ax[1].legend()
     
-    plt.savefig('128_128.png')
+    plt.savefig('second_128.png')
     
     # Confusion Matrix and Classification Report
     Y_pred = model.predict_generator(validation_generator, 301 // batch_size+1)
@@ -166,4 +174,4 @@ if __name__ == "__main__":
     fpr, tpr, thresholds = roc_curve(validation_generator.classes, Y_pred)
     fig, ax = plt.subplots()
     ax.plot(fpr, tpr)
-    plt.savefig("ROC_128x128.png")
+    plt.savefig("second_ROC_128.png")

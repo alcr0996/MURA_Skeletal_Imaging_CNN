@@ -20,6 +20,7 @@ from tensorflow.keras.optimizers import Adam, SGD, RMSprop
 from tensorflow.keras.layers import PReLU, LeakyReLU
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.metrics import Precision, Recall
+from tensorflow.keras.utils import plot_model
 
 from sklearn.metrics import classification_report, confusion_matrix, roc_curve
 from sklearn.model_selection import train_test_split
@@ -33,17 +34,17 @@ if __name__ == "__main__":
     # X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
 
     # dimensions of our images.
-    img_width, img_height = 128, 128
-    train_data_dir = 'data/train_images/FOREARM'
-    validation_data_dir = 'data/valid_images/FOREARM'
-    nb_train_samples = 1830
-    nb_validation_samples = 301
-    epochs = 100
-    batch_size = 50
+    img_width, img_height = 64, 64
+    train_data_dir = 'data/train_images/all_train'
+    validation_data_dir = 'data/valid_images/all_valid'
+    nb_train_samples = 20000
+    nb_validation_samples = 10000
+    epochs = 10
+    batch_size = 500
 
     model = Sequential()
     
-    model.add(Conv2D(64, (3, 3), input_shape=(img_width, img_height, 3),padding='same', name = 'first_cnn_layer'))
+    model.add(Conv2D(64, (3, 3), input_shape=(img_width, img_height, 3),padding='valid', name = 'first_cnn_layer'))
     model.add(Activation('relu', name = 'first_cnn_activation'))
     model.add(MaxPooling2D(pool_size=(2, 2), name = 'first_pooling_layer'))
 
@@ -81,7 +82,7 @@ if __name__ == "__main__":
                 metrics=['accuracy', keras.metrics.Precision(), keras.metrics.Recall()])
     
     # model.load_weights('data/model_weights/sigmoid_cnn.h5')         
-    model_name = 'sigmoid_cnn_128_128'
+    model_name = 'all_classes_sigmoid_cnn_64_64'
     model.save_weights('data/model_weights/'+model_name+'.h5')
     model.save('data/cnn_models/'+model_name+'.h5')
 
@@ -141,7 +142,7 @@ if __name__ == "__main__":
     ax[1].plot(history.history['val_accuracy'], label='test')
     ax[1].legend()
     
-    plt.savefig('sigmoid_cnn_positive_negative_128x128.png')
+    plt.savefig('sigmoid_all_classes_cnn_positive_negative_64_64_2.png')
     
     # Confusion Matrix and Classification Report
     Y_pred = model.predict_generator(validation_generator, nb_validation_samples // batch_size+1)
@@ -153,8 +154,12 @@ if __name__ == "__main__":
     fpr, tpr, thresholds = roc_curve(validation_generator.classes, Y_pred)
     fig, ax = plt.subplots()
     ax.plot(fpr, tpr)
-    ax.set_title('ROC - Positive vs. Negative 128x128')
-    plt.savefig('ROC_sigmoid_pos_vs_neg_128x128.png')
+    ax.set_title('ROC - All Classes Positive vs. Negative 64_64_2')
+    plt.savefig('ROC_all_classes_sigmoid_pos_vs_neg_64_64_2.png')
+
+    model.summary()
     # print('Classification Report')
     # target_names = ['positive', 'negative']
     # print(classification_report(validation_generator.classes, y_pred, target_names=target_names))
+
+    # plot_model(model, to_file=model_name+'model_plot.png', show_shapes=True, show_layer_names=True)

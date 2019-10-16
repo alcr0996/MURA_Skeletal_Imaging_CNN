@@ -20,6 +20,7 @@ from tensorflow.keras.optimizers import Adam, SGD, RMSprop
 from tensorflow.keras.layers import PReLU, LeakyReLU
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.metrics import Precision, Recall
+from tensorflow.keras.utils import plot_model
 
 from sklearn.metrics import classification_report, confusion_matrix, roc_curve
 from sklearn.model_selection import train_test_split
@@ -38,7 +39,7 @@ if __name__ == "__main__":
     validation_data_dir = 'data/valid_images/FOREARM'
     nb_train_samples = 1830
     nb_validation_samples = 301
-    epochs = 100
+    epochs = 50
     batch_size = 50
 
     model = Sequential()
@@ -83,7 +84,7 @@ if __name__ == "__main__":
                 metrics=['accuracy', keras.metrics.Precision(), keras.metrics.Recall()])
     
     # model.load_weights('data/model_weights/sigmoid_cnn.h5')         
-    model_name = 'double_conv_sigmoid_cnn_64_64'
+    model_name = 'double_conv_sigmoid_cnn_64_64-V2'
     model.save_weights('data/model_weights/'+model_name+'.h5')
     model.save('data/cnn_models/'+model_name+'.h5')
 
@@ -143,7 +144,7 @@ if __name__ == "__main__":
     ax[1].plot(history.history['val_accuracy'], label='test')
     ax[1].legend()
     
-    plt.savefig('double_conv_sigmoid_cnn_positive_negative_64x64.png')
+    plt.savefig('double_conv_sigmoid_cnn_positive_negative_64x64_v2.png')
     
     # Confusion Matrix and Classification Report
     Y_pred = model.predict_generator(validation_generator, nb_validation_samples // batch_size+1)
@@ -155,8 +156,9 @@ if __name__ == "__main__":
     fpr, tpr, thresholds = roc_curve(validation_generator.classes, Y_pred)
     fig, ax = plt.subplots()
     ax.plot(fpr, tpr)
-    ax.set_title('Double Conv. ROC - Positive vs. Negative 64x64')
-    plt.savefig('double_conv_ROC_sigmoid_pos_vs_neg_64x64.png')
+    ax.set_title('Double Conv. ROC - Positive vs. Negative 64x64_v2')
+    plt.savefig('double_conv_ROC_sigmoid_pos_vs_neg_64x64_v2.png')
     # print('Classification Report')
     # target_names = ['positive', 'negative']
-    # print(classification_report(validation_generator.classes, y_pred, target_names=target_names))
+    # print(classification_report(validation_generator.classes, y_pred, target_names=target_names))ator.classes, y_pred, target_names=target_names))
+    plot_model(model, to_file=model_name+'model_plot.png', show_shapes=True, show_layer_names=True)

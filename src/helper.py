@@ -39,26 +39,9 @@ def find_rows_with_color(pixels, width, height, color):
         else:
             rows_found.append(y)
     return rows_found
-# old_im = Image.open("path/to/old/image.png")
-# if old_im.mode != 'RGB':
-#     old_im = old_im.convert('RGB')
-# pixels = old_im.load()
-# width, height = old_im.size[0], old_im.size[1]
-# rows_to_remove = find_rows_with_color(pixels, width, height, (0, 0, 0)) #Remove black rows
-# new_im = Image.new('RGB', (width, height - len(rows_to_remove)))
-# pixels_new = new_im.load()
-# rows_removed = 0
-# for y in xrange(old_im.size[1]):
-#     if y not in rows_to_remove:
-#         for x in xrange(new_im.size[0]):
-#             pixels_new[x, y - rows_removed] = pixels[x, y]
-#     else:
-#         rows_removed += 1
-# new_im.save("path/to/new/image.png")
-
 
 if __name__ == "__main__":
-
+    
     all_sd_names = [sd for sd in os.listdir('MURA_images/train/XR_ELBOW') if
                     os.path.isdir(os.path.join('../MURA_images/train/XR_ELBOW', sd))]
     count_sd = len([sd for sd in os.listdir('MURA_images/train/XR_ELBOW') if
@@ -71,6 +54,8 @@ if __name__ == "__main__":
 
     fig, ax = plt.subplots(figsize=(12,12))
     plt.bar(x, y)
+    plt.title('Count of Elbow Directories with X images')
+    plt.savefig('Count of humerus directories')
     # fig, ax = plt.subplts(figsize=(12,12))
     # ax
 

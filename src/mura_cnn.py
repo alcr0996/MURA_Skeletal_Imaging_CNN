@@ -19,7 +19,7 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.optimizers import Adam, SGD, RMSprop
 from tensorflow.keras.layers import PReLU, LeakyReLU
 
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, roc_curve
 from sklearn.model_selection import train_test_split
 
 
@@ -86,13 +86,13 @@ if __name__ == "__main__":
                                     save_best_only=False, save_weights_only=True,
                                     mode='auto', save_freq=1)
 
-    model.layers[0].get_weights()
-    model.layers[1].get_weights()
-    model.layers[2].get_weights()
-    model.layers[3].get_weights()
-    model.layers[4].get_weights()
-    model.layers[5].get_weights()
-    model.layers[6].get_weights()
+#     model.layers[0].get_weights()
+#     model.layers[1].get_weights()
+#     model.layers[2].get_weights()
+#     model.layers[3].get_weights()
+#     model.layers[4].get_weights()
+#     model.layers[5].get_weights()
+#     model.layers[6].get_weights()
 
 
 
@@ -149,17 +149,21 @@ if __name__ == "__main__":
     ax[1].plot(history.history['val_accuracy'], label='test')
     ax[1].legend()
     
-    plt.savefig('32_32.png')
+    plt.savefig('128_128.png')
     
     # Confusion Matrix and Classification Report
     Y_pred = model.predict_generator(validation_generator, 301 // batch_size+1)
-    y_pred = np.argmax(Y_pred, axis=1)
+    y_pred = np.where(Y_pred>=.50, 1, 0)
     print('Confusion Matrix')
     print(confusion_matrix(validation_generator.classes, y_pred))
+    
     print('Classification Report')
     target_names = ['positive', 'negative']
     print(classification_report(validation_generator.classes, y_pred, target_names=target_names))
 
+    # ROC
 
-    plt.legend()
-
+    fpr, tpr, thresholds = roc_curve(validation_generator.classes, Y_pred)
+    fig, ax = plt.subplots()
+    ax.plot(fpr, tpr)
+    plt.savefig("ROC_128x128.png")

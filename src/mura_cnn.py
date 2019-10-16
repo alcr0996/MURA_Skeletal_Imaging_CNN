@@ -18,7 +18,8 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.optimizers import Adam, SGD, RMSprop
 from tensorflow.keras.layers import PReLU, LeakyReLU
-from tensorflow.keras.callbacks import ModelCheckpoint
+# from tensorflow.keras.callback import ModelCheckpoint
+from tensorflow.keras.metrics import Precision, Recall
 
 from sklearn.metrics import classification_report, confusion_matrix, roc_curve
 from sklearn.model_selection import train_test_split
@@ -38,32 +39,37 @@ if __name__ == "__main__":
     nb_train_samples = 1830
     nb_validation_samples = 301
     epochs = 30
-    batch_size = 25
+    batch_size = 50
 
     model = Sequential()
-    model.add(Conv2D(32, (3, 3), input_shape=(img_width, img_height, 3),
-                     padding='same'))
-    model.add(Activation('relu'))
-    model.add(Conv2D(32, (3, 3), input_shape=(img_width, img_height, 3),
-                padding='same'))
-    model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-
-    model.add(Conv2D(64, (3, 3), padding='same'))
-    model.add(Activation('relu'))
-    model.add(Conv2D(64, (3, 3), padding='same'))
-    model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-
-    model.add(Conv2D(128, (3, 3), padding='same'))
-    model.add(Activation('relu'))
-    # model.add(MaxPooling2D(pool_size=(2, 2)))
     
+    model.add(Conv2D(32, (3, 3), input_shape=(img_width, img_height, 3),padding='same'))
+    model.add(Activation(LeakyReLU()))
+    model.add(Conv2D(32, (3, 3), padding='same'))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
+    model.add(Conv2D(64, (3, 3), padding='same'))
+    model.add(Activation(LeakyReLU()))
+    model.add(Conv2D(64, (3, 3), padding='same'))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
+    model.add(Conv2D(128, (3, 3), padding='same'))
+    model.add(Activation(LeakyReLU()))
     model.add(Conv2D(128, (3, 3), padding='same'))
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
+    
+    # model.add(Conv2D(256, (3, 3), padding='same'))
+    # model.add(Activation('relu'))
+    # model.add(MaxPooling2D(pool_size=(1, 1)))
 
     model.add(Flatten())
+    
+    # model.add(Dense(128))
+    # model.add(Activation('relu'))
+    # model.add(Dropout(0.2))
     
     model.add(Dense(64))
     model.add(Activation(LeakyReLU()))
@@ -72,33 +78,29 @@ if __name__ == "__main__":
     model.add(Dense(32))
     model.add(Activation(LeakyReLU()))
     model.add(Dropout(0.2))
-    
-#     model.add(Dense(32))
-#     model.add(Activation(LeakyReLU()))
-#     model.add(Dropout(0.2))
 
     model.add(Dense(1))
     model.add(Activation('sigmoid'))
 
-    opt = Adam(learning_rate = 0.0005)
+    opt = Adam(learning_rate = 0.0001)
     model.compile(loss='binary_crossentropy',optimizer=opt,
                 metrics=['accuracy', keras.metrics.Precision(), keras.metrics.Recall()])
     
-    #model.load_weights('data/model_weights/best_model_so_far.h5')         
-    model_name = 'second_model_128'
+    model.load_weights('data/model_weights/128x128_set_thresh_2.h5')         
+    model_name = '128x128_set_thresh_3'
     model.save_weights('data/model_weights/'+model_name+'.h5')
-    model.save('data/models/'+model_name+'.h5')
-#     callback = ModelCheckpoint('data/model_weights/'+model_name+'_best_epoch.h5', monitor='val_acc', verbose=1,
-#                                      save_best_only=True, save_weights_only=True,
-#                                      mode='auto', period=1)
+    model.save('data/cnn_models/'+model_name+'.h5')
+    # keras.callbacks.ModelCheckpoint('data/model_weights/'+model_name+'_best_epoch.h5', monitor='accuracy', verbose=1,
+    #                                 save_best_only=False, save_weights_only=True,
+    #                                 mode='auto', save_freq=1)
 
-#     model.layers[0].get_weights()
-#     model.layers[1].get_weights()
-#     model.layers[2].get_weights()
-#     model.layers[3].get_weights()
-#     model.layers[4].get_weights()
-#     model.layers[5].get_weights()
-#     model.layers[6].get_weights()
+    # model.layers[0].get_weights()
+    # model.layers[1].get_weights()
+    # model.layers[2].get_weights()
+    # model.layers[3].get_weights()
+    # model.layers[4].get_weights()
+    # model.layers[5].get_weights()
+    # model.layers[6].get_weights()
 
 
 
@@ -136,9 +138,7 @@ if __name__ == "__main__":
     steps_per_epoch= nb_train_samples // batch_size,
     epochs=epochs,
     validation_data=validation_generator,
-    validation_steps=nb_validation_samples // batch_size
-#     callbacks = [callback]
-    )
+    validation_steps=nb_validation_samples // batch_size)
 
     validation_generator.class_indices
     
@@ -157,21 +157,21 @@ if __name__ == "__main__":
     ax[1].plot(history.history['val_accuracy'], label='test')
     ax[1].legend()
     
-    plt.savefig('second_128.png')
+    plt.savefig('128x128_set_thresh_2.png')
     
     # Confusion Matrix and Classification Report
-    Y_pred = model.predict_generator(validation_generator, 301 // batch_size+1)
-    y_pred = np.where(Y_pred>=.50, 1, 0)
+    Y_pred = model.predict_generator(validation_generator, nb_validation_samples // batch_size+1)
+    y_pred = np.where(Y_pred>=.40, 1, 0)
     print('Confusion Matrix')
-    print(confusion_matrix(validation_generator.classes, y_pred))
-    
-    print('Classification Report')
-    target_names = ['positive', 'negative']
-    print(classification_report(validation_generator.classes, y_pred, target_names=target_names))
-
-    # ROC
+    cm = confusion_matrix(validation_generator.classes, y_pred)
+    print (cm)
 
     fpr, tpr, thresholds = roc_curve(validation_generator.classes, Y_pred)
     fig, ax = plt.subplots()
     ax.plot(fpr, tpr)
-    plt.savefig("second_ROC_128.png")
+    ax.set_title('ROC - 128x128')
+    plt.savefig('ROC_128x128_set_thresh_2.png')
+    # print('Classification Report')
+    # target_names = ['positive', 'negative']
+    # print(classification_report(validation_generator.classes, y_pred, target_names=target_names))
+

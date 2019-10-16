@@ -24,9 +24,9 @@ from sklearn.metrics import classification_report, confusion_matrix, roc_curve
 from sklearn.model_selection import train_test_split
 
 
-class binary_CNN(object):
+class CNN_creator(object):
 
-    def __init__(self, train_path, val_path, test_path, model_name=None, new_model=True, previous_weights=None):
+    def __init__(self, train_path, val_path, model_name=None, new_model=True, previous_weights=None):
 
         self.weight_path = weight_path
         self.model_name = model_name
@@ -34,24 +34,21 @@ class binary_CNN(object):
         self.metrics_save_path = "data/cnn_metrics/"
         self.train_path = train_path
         self.val_path = val_path
-        self.test_path = test_path
         self.model_type = model_type
 
     def model_init(self):
         self.param_init()
         self.create_generators()
-        self.make_callbacks()
    
     def fit(self):
         self.hist = self.model.fit_generator(
-            self.train_gen,
+            self.train_gen,fourth_
             steps_per_epoch=self.n_train/self.batch,
             epochs=self.epochs,
             verbose=1,
             validation_data=self.val_gen,
             validation_steps=self.n_val/self.batch,
             use_multiprocessing=True,
-            callbacks = self.callbacks
             )
 
     def add_cnn_layer(self, num_filters = 32, kernel_size=(3, 3), pool_size=(2, 2), dropout=0.1,
@@ -68,6 +65,9 @@ class binary_CNN(object):
                              name=layer_number+'_cnn_layer'))
             self.model.add(Activation(activation, name=layer_number+'_cnn_activaiton_layer'))
 
+    def add_pooling_layer(self,pool_size=(2, 2), layer_name = None):
+        self.model.add(MaxPooling2D(pool_size=(2, 2), name = layer_name+'pooling_layer')
+    
     def add_dense_layer(self, num_neurons = 32, kernel_size=(3, 3), pool_size=(2, 2), dropout=0.1,
                          num_blocks=1, first_layer=False, activation=LeakyRelu(), padding = 'same',
                          custom_weights=None, layer_name=None):
@@ -82,15 +82,18 @@ class binary_CNN(object):
                              name=layer_number+'_dense_layer'))
             self.model.add(Activation(activation, name=layer_number+'_dense_activation_layer'))
     
-        # start back up here!!!! - maybe add final layer?
-        #     if self.weight_path is not None:
-        #     self.model.load_weights(self.weight_path, by_name=True, skip_mismatch=True)
-        # self.model.compile( - going to have to def this
-        #     loss='categorical_crossentropy', 
-        #     optimizer='adam', 
-        #     metrics=['accuracy', 
-        #     self.top_3_accuracy, 
-        #     self.top_5_accuracy])
+    def add_final_layer(self, num_neurons = 1, activation='sigmoid', optimizer='adam',
+                         loss = 'binary_crossentropy', metrics=['accuracy'],
+                         layer_name =None):
+        self.model.add(Dense(num_neurons, name = layer_name+'final_dense_layer))
+        self.model.add(Activation(activation, name=layer_name+'final_activation_layer'))
+
+        self.model.compile(loss=loss,optimizer=optimizer,metrics=metrics)
+
+    def save_model(self):
+            model_path = self.model_save_path + self.model_name + ".h5"
+            self.model.save(model_path)
+            print("Saved model to \"" + model_path + "\"")
 
     def create_generators(self, augmentation_strength=0.1, rotation_range=20, rescale=1./255, class_mode='binary', shuffle=False):
         
@@ -100,7 +103,7 @@ class binary_CNN(object):
             width_shift_range=augmentation_strength,
             height_shift_range=augmentation_strength,
             shear_range=augmentation_strength,
-            zoom_range=augmentation_strength*2,
+            zoom_range=augmentation_strength*2,num_neurons = 32,
             horizontal_flip=True,
             vertical_flip=True,
             brightness_range=[0.3, 0.7],
@@ -132,3 +135,13 @@ class binary_CNN(object):
             class_mode=class_mode,
             shuffle=shuffle
             )
+
+if __name__ == "__main__":
+    
+    train_path = "../data/train_images/ELBOW"
+    val_path = "../data/valid_images/ELBOW"
+    # test_path = "../data/test"
+
+    model = CNN_creator(train_path, val_path, model_name='sigmoid_cnn')
+
+    model.param_init(epochs=50, batch_size=50, image_size=(64, 64))

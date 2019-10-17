@@ -135,25 +135,38 @@ if __name__ == "__main__":
     validation_generator.class_indices
     
     # plot loss during training
-    fig, ax = plt.subplots(2, figsize = (12, 8))
+    fig, ax = plt.subplots(4, figsize = (12, 8))
     ax[0].set_title('Loss')
-    ax[0].set_xticks(range(0,20,5))
+    ax[0].set_xticks(range(0,41,5))
     ax[0].plot(history.history['loss'], label='train')
     ax[0].plot(history.history['val_loss'], label='test')
     ax[0].legend()
     
     # plot accuracy during training
-    ax[1].set_xticks(range(0,20,5))
+    ax[1].set_xticks(range(0,41,5))
     ax[1].set_title('Accuracy')
     ax[1].plot(history.history['accuracy'], label='train')
     ax[1].plot(history.history['val_accuracy'], label='test')
     ax[1].legend()
     
+    ax[2].set_xticks(range(0,41,5))
+    ax[2].set_title('Precision')
+    ax[2].plot(history.history['precision_9'], label='train')
+    ax[2].plot(history.history['val_precision_9'], label='test')
+    ax[2].legend()
+    
+    ax[3].set_xticks(range(0,41,5))
+    ax[3].set_title('Recall')
+    ax[3].plot(history.history['recall_9'], label='train')
+    ax[3].plot(history.history['val_recall_9'], label='test')
+    ax[3].legend()
+    
+    plt.tight_layout()
     plt.savefig('sigmoid_all_classes_cnn_positive_negative_64x64_add_layers.png')
     
     # Confusion Matrix and Classification Report
     Y_pred = model.predict_generator(validation_generator, nb_validation_samples // batch_size+1)
-    y_pred = np.where(Y_pred>=.5, 1, 0)
+    y_pred = np.where(Y_pred>=.45, 1, 0)
     print('Confusion Matrix')
     cm = confusion_matrix(validation_generator.classes, y_pred)
     print (cm)

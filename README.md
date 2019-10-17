@@ -1,6 +1,6 @@
 # MURA Skeletal Imaging CNN
 
-![Wrist image](MURA_images/train/XR_WRIST/patient00027.png)
+<img alt="buterfly hands" src='MURA_images/train/XR_HAND/patient00588/study1_positive/image2.png' width=700>
 
 
 ## Table of Contents
@@ -19,21 +19,41 @@ There are millions of new musculoskeletal conditions/injuries each year. With th
 
 ## Data
 
-The data was obtained from the StanfordML group[here](https://stanfordmlgroup.github.io/competitions/mura/). The data was mostly images, with a couple of CSVs provided for image paths and targets.
+The data was obtained from the StanfordML group [here](https://stanfordmlgroup.github.io/competitions/mura/). The data was mostly images, with a couple of CSVs provided for image paths and targets.
 
 The images were separated into training and validation sets, with further separation for each class of X-Ray: Finger, Hand, Wrist, Forearm, Elbow, Humerus, and Shoulder.
 
-Within each subdirectory for image class, there were directories for each patient study, with the target being included in the patient directory name.
+Within each subdirectory for image class, there were directories for each patient study, with the target being included in the patient directory name. This dataset was a mess of subdirectories. Notice that the target was labelled for each directory/patient study and not for each image.
 
-## First Glance
+<img alt="subdirectory flow chart" src='data/images_for_readme/subdirectory_chart.png' width=600>
+
+
+# First Glance
+<img alt="jackies response fucked up finger x-ray" src='data/images_for_readme/jackie_wtf.jpeg' width=700>
 
 The images provided were all over the spectrum in terms of quality. There were images with multiple images, sometimes overlaying each other...
 
-<img_alt="fucked up finger x-ray" src='MURA_images/train/XR_FINGER_patient00195/study1_negative/image1.png>
+<img alt="fucked up finger x-ray" src='data/figures/Count_all_directories.png' width = 450>
+<img alt="fucked up finger x-ray" src='data/figures/Negative_Positive_Images_per_Bone.png' width = 450>
 
-## When are incidents occurring?
 
-I was curious to see when the BFD receives the highest volume of calls over the course of the week. I anticipated seeing a higher concentration of calls from Thursday-Saturday, with noticeable peaks in the evenings. As demonstrated in the following kernal density estimation (KDE), those assumptions do not prove to be true. There is a noticeable trend as the week continues for there to be more incidents in the very early morning (i.e. 12-2AM), but there appears to be a higher concentration of incidents between normal wakeful hours from Sunday-Thursday.
+The images provided were all over the spectrum in terms of quality. There were images with multiple images, sometimes overlaying each other...
+
+<img alt="fucked up finger x-ray" src='MURA_images/train/XR_FINGER/patient00195/study1_negative/image1.png' width = 300>
+
+<img alt="fucked up finger x-ray" src='MURA_images/train/XR_SHOULDER/patient00013/study1_positive/image1.png' width = 300 height = 406>
+
+<img alt="fucked up finger x-ray" src='MURA_images/train/XR_HAND/patient00051/study1_negative/image2.png' width = 300 height = 406>
+
+
+
+On the whole, the images were not as contrived as the first example, but their image quality, contrast, brightness, and placement were not very well controlled.
+
+
+
+## Starting with the Forearm
+
+I initially selected 
 
 <img alt="KDE of hour and day" src='images/kde_plot_DoW_Year.png' width=500>
 

@@ -3,3 +3,5 @@
 /data/valid_images
 /data/cnn_models
 /data/models
+/data/wrong_images_all_100
+/data/wrong_images_all_64

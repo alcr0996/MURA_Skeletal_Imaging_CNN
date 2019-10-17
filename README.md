@@ -1,6 +1,6 @@
 # MURA Skeletal Imaging CNN
 
-<img alt="buterfly hands" src='MURA_images/train/XR_HAND/patient00588/study1_positive/image2.png' width=700>
+<img alt="buterfly hands" src='MURA_images/train/XR_HAND/patient00588/study1_positive/image2.png' width=900 height=600>
 
 
 ## Table of Contents
@@ -31,7 +31,7 @@ Within each subdirectory for image class, there were directories for each patien
 # First Glance
 <img alt="jackies response fucked up finger x-ray" src='data/images_for_readme/jackie_wtf.jpeg' width=700>
 
-The images provided were all over the spectrum in terms of quality. There were images with multiple images, sometimes overlaying each other...
+First I wanted to take a look at the directories, the number of images per directory, and the balance of my classes.
 
 <img alt="fucked up finger x-ray" src='data/figures/Count_all_directories.png' width = 450>
 <img alt="fucked up finger x-ray" src='data/figures/Negative_Positive_Images_per_Bone.png' width = 450>
@@ -43,17 +43,30 @@ The images provided were all over the spectrum in terms of quality. There were i
 
 <img alt="fucked up finger x-ray" src='MURA_images/train/XR_SHOULDER/patient00013/study1_positive/image1.png' width = 300 height = 406>
 
-<img alt="fucked up finger x-ray" src='MURA_images/train/XR_HAND/patient00051/study1_negative/image2.png' width = 300 height = 406>
+<img alt="fucked up finger x-ray" src='MURA_images/train/XR_ELBOW/patient00646/study1_positive/image2.png' width = 300 height = 406>
 
 
 
 On the whole, the images were not as contrived as the first example, but their image quality, contrast, brightness, and placement were not very well controlled.
 
 
+## Image Augmentation
+
+From the initial EDA, I started to build my model, but before I got too far, I wanted to make sure my image augmentations were reasonable.
+
+
+<img alt="fucked up finger x-ray" src='data/images_for_readme/hand_0_89.jpeg' width = 300>
+<img alt="fucked up finger x-ray" src='data/images_for_readme/hand_0_1735.jpeg' width = 300><img alt="fucked up finger x-ray" src='data/images_for_readme/hand_0_5052.jpeg' width = 300>
+
+Looking good. On to selecting what image size to use. The initial paper provided from the data link used images that were 224x224. I certainly wanted to avoid that, so took a quick glance at my options.
+
+<img alt="fucked up finger x-ray" src='data/images_for_readme/Image_Rescaled.png' width = 600>
+
+I felt that the 32x32 option wasn't going to cut it for this dataset, but thought I might be able to get away with the 64x64. Regardless, I tried all the options here at one point or another.
 
 ## Starting with the Forearm
 
-I initially selected 
+I initially worked with the Forearm data because it was a smaller dataset that was very well balanced. Using this dataset, I tweaked my model, to find the best trade-off between image size, epochs, layers, and activations. In hindsight, I should have more time with multiple sets of images while tweaking the model.
 
 <img alt="KDE of hour and day" src='images/kde_plot_DoW_Year.png' width=500>
 

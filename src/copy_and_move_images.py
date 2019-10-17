@@ -59,7 +59,6 @@ def copy_move_files_all_class(path, target_dir):
 def copy_move_files_all_bones(path, target_dir):
     # pdb.set_trace()
     word_list = ['ELBOW', 'FINGER', 'HAND', 'WRIST', 'FOREARM', 'HUMERUS', 'SHOULDER'] 
-
     for word in word_list:
         i = 1
         directory_list = [x[0] for x in os.walk(path)]
@@ -79,7 +78,7 @@ if __name__ == "__main__":
     # copy_move_files('MURA_images/train/', 'data/train)
 
     # copy_move_files_all_class('MURA_images/train', 'data/train_images/all_train')
-    # copy_move_files_all_class('MURA_images/train', 'data/valid_images/all_valid')
+    # copy_move_files_all_class('MURA_images/valid', 'data/valid_images/all_valid')
 
-    copy_move_files_all_bones('MURA_images/train', 'data/train_images/all_bones_train')
-    copy_move_files_all_bones('MURA_images/train', 'data/valid_images/all_bones_valid')
+    #copy_move_files_all_bones('MURA_images/train', 'data/train_images/all_bones_train')
+    # copy_move_files_all_bones('MURA_images/valid', 'data/valid_images/all_bones_valid')

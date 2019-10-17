@@ -24,6 +24,8 @@ from tensorflow.keras.utils import plot_model
 
 from sklearn.metrics import classification_report, confusion_matrix, roc_curve
 from sklearn.model_selection import train_test_split
+import PIL
+from PIL import Image
 
 
 if __name__ == "__main__":
@@ -37,10 +39,10 @@ if __name__ == "__main__":
     img_width, img_height = 64, 64
     train_data_dir = 'data/train_images/all_train'
     validation_data_dir = 'data/valid_images/all_valid'
-    nb_train_samples = 20000
-    nb_validation_samples = 10000
-    epochs = 10
-    batch_size = 500
+    nb_train_samples = 36808
+    nb_validation_samples = 3197
+    epochs = 40
+    batch_size = 50
 
     model = Sequential()
     
@@ -48,9 +50,17 @@ if __name__ == "__main__":
     model.add(Activation('relu', name = 'first_cnn_activation'))
     model.add(MaxPooling2D(pool_size=(2, 2), name = 'first_pooling_layer'))
 
+    model.add(Conv2D(64, (3, 3) ,padding='same', name = 'first_1_cnn_layer'))
+    model.add(Activation('relu', name = 'first_1_cnn_activation'))
+    model.add(MaxPooling2D(pool_size=(1, 1), name = 'first_1_pooling_layer'))
+
     model.add(Conv2D(128, (3, 3), padding='same', name = 'second_cnn_layer'))
     model.add(Activation('relu', name = 'second_cnn_activation'))
     model.add(MaxPooling2D(pool_size=(2, 2), name = 'second_pooling_layer'))
+    
+    model.add(Conv2D(128, (3, 3), padding='same', name = 'second_2_cnn_layer'))
+    model.add(Activation('relu', name = 'second_2_cnn_activation'))
+    model.add(MaxPooling2D(pool_size=(1, 1), name = 'second_2_pooling_layer'))
 
     model.add(Conv2D(256, (3, 3), padding='same', name = 'third_cnn_layer'))
     model.add(Activation('relu', name = 'third_cnn_activation'))
@@ -59,10 +69,7 @@ if __name__ == "__main__":
     model.add(Conv2D(256, (3, 3), padding='same', name = 'fourth_cnn_layer'))
     model.add(Activation('relu', name = 'fourth_cnn_activation'))
     model.add(MaxPooling2D(pool_size=(2, 2), name = 'fourth_pooling_layer'))
-
-    # model.add(Conv2D(512, (3, 3), padding='same', name = 'fifth_cnn_layer'))
-    # model.add(Activation('relu', name = 'fifth_cnn_activation'))
-    # model.add(MaxPooling2D(pool_size=(2, 2), name = 'fifth_pooling_layer'))
+    
 
     model.add(Flatten())
     
@@ -77,12 +84,11 @@ if __name__ == "__main__":
     model.add(Dense(1, name = 'final_sigmoid_layer'))
     model.add(Activation('sigmoid', name = 'sigmoid_activation'))
 
-    # opt = Adam(learning_rate = 0.0001)
     model.compile(loss='binary_crossentropy',optimizer='adam',
                 metrics=['accuracy', keras.metrics.Precision(), keras.metrics.Recall()])
     
     # model.load_weights('data/model_weights/sigmoid_cnn.h5')         
-    model_name = 'all_classes_sigmoid_cnn_64_64'
+    model_name = 'all_classes_sigmoid_cnn_64_64_added_layers'
     model.save_weights('data/model_weights/'+model_name+'.h5')
     model.save('data/cnn_models/'+model_name+'.h5')
 
@@ -116,7 +122,8 @@ if __name__ == "__main__":
     validation_data_dir,
     target_size=(img_width, img_height),
     batch_size=batch_size,
-    class_mode='binary')
+    class_mode='binary',
+    shuffle = False)
 
     history = model.fit_generator(
     train_generator,
@@ -130,19 +137,19 @@ if __name__ == "__main__":
     # plot loss during training
     fig, ax = plt.subplots(2, figsize = (12, 8))
     ax[0].set_title('Loss')
-    ax[0].set_xticks(range(0,100,10))
+    ax[0].set_xticks(range(0,20,5))
     ax[0].plot(history.history['loss'], label='train')
     ax[0].plot(history.history['val_loss'], label='test')
     ax[0].legend()
     
     # plot accuracy during training
-    ax[1].set_xticks(range(0,100,10))
+    ax[1].set_xticks(range(0,20,5))
     ax[1].set_title('Accuracy')
     ax[1].plot(history.history['accuracy'], label='train')
     ax[1].plot(history.history['val_accuracy'], label='test')
     ax[1].legend()
     
-    plt.savefig('sigmoid_all_classes_cnn_positive_negative_64_64_2.png')
+    plt.savefig('sigmoid_all_classes_cnn_positive_negative_64x64_add_layers.png')
     
     # Confusion Matrix and Classification Report
     Y_pred = model.predict_generator(validation_generator, nb_validation_samples // batch_size+1)
@@ -154,8 +161,8 @@ if __name__ == "__main__":
     fpr, tpr, thresholds = roc_curve(validation_generator.classes, Y_pred)
     fig, ax = plt.subplots()
     ax.plot(fpr, tpr)
-    ax.set_title('ROC - All Classes Positive vs. Negative 64_64_2')
-    plt.savefig('ROC_all_classes_sigmoid_pos_vs_neg_64_64_2.png')
+    ax.set_title('ROC - All Classes Positive vs. Negative 64x64_add_layers')
+    plt.savefig('ROC_all_classes_sigmoid_pos_vs_neg_64_64_add_layers.png')
 
     model.summary()
     # print('Classification Report')

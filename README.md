@@ -1,5 +1,4 @@
 # MURA Skeletal Imaging CNN
-![Butterfly Hands](MURA_images/train/XR_HAND/patient00588/study1_positive/image2.png)
 
 <img alt="butterfly hands" src='MURA_images/train/XR_HAND/patient00588/study1_positive/image2.png' width=900 height=600>
 
@@ -34,17 +33,12 @@ Within each subdirectory for image class, there were directories for each patien
 
 First I wanted to take a look at the directories, the number of images per directory, and the balance of my classes.
 
-<img alt="Count of training directories" src='data/figures/figures_for_readme/Count_all_directories.png' width = 450>
-<img alt="Neative/Positive Images per Bone" src='data/figures/figures_for_readme/Negative_Positive_Images_per_Bone.png' width = 450>
+<img alt="Count of training directories" src='data/figures/figures_for_readme/Count_all_directories.png' width = 450><img alt="Neative/Positive Images per Bone" src='data/figures/figures_for_readme/Negative_Positive_Images_per_Bone.png' width = 450>
 
 
 The images provided were all over the spectrum in terms of quality. There were images with multiple images, sometimes overlaying each other...
 
-<img alt="hands" src='MURA_images/train/XR_FINGER/patient00195/study1_negative/image1.png' width = 300>
-
-<img alt="dark shoulder" src='MURA_images/train/XR_SHOULDER/patient00013/study1_positive/image1.png' width = 300 height = 406>
-
-<img alt="stretched elbow" src='MURA_images/train/XR_ELBOW/patient00646/study1_positive/image2.png' width = 300 height = 406>
+<img alt="hands" src='MURA_images/train/XR_FINGER/patient00195/study1_negative/image1.png' width = 300><img alt="dark shoulder" src='MURA_images/train/XR_SHOULDER/patient00013/study1_positive/image1.png' width = 300 height = 406><img alt="stretched elbow" src='MURA_images/train/XR_ELBOW/patient00646/study1_positive/image2.png' width = 300 height = 406>
 
 
 
@@ -70,6 +64,7 @@ I felt that the 32x32 option wasn't going to cut it for this dataset, but though
 I initially worked with the Forearm data because it was a smaller dataset that was not terribly balanced. I have been hesitant initially to balance classes with the organization of the files. Using this dataset, I tweaked my model, to find the best trade-off between image size, epochs, layers, and activations. In hindsight, I should have more time with multiple sets of images while tweaking the model.
 
 <img alt="model summary" src='data/figures/figures_for_readme/sigmoid_cnn_64_64_2model_plot.png' width=500 height=1100>
+
 
 ###  How does time of day influence response time?
 

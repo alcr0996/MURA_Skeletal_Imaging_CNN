@@ -56,6 +56,14 @@ Looking good. On to selecting what image size to use. The initial paper provided
 
 I felt that the 32x32 option wasn't going to cut it for this dataset, but thought I might be able to get away with the 64x64. Regardless, I tried all the options here at one point or another.
 
+## How to classify the data
+
+I struggled for a long time with how to deal with classifying the data. My concern was that the data was labelled by study, not by image, and that within the same study, one image might show an obvious abnormality, while other images may not, since the view typically changes.
+
+In the end, I classified every image as positive that came from a positive study, and vice versa for negatives simply because I wanted to start moving forward with the project and I could not think how to control for this issue without going through every directory and taking my best guess.
+
+<img alt="humerus not broke" src='data/images_for_readme/notbrokeelbow.png' width = 300><img alt="broke humerus" src='data/images_for_readme/brokeelbow.png' width = 300/>
+
 ## Starting with the Forearm
 
 I initially worked with the Forearm data because it was a smaller dataset that was not terribly balanced. I have been hesitant initially to balance classes with the organization of the files. Using this dataset, I tweaked my model, to find the best trade-off between image size, epochs, layers, and activations. In hindsight, I should have more time with multiple sets of images while tweaking the model.
@@ -74,7 +82,7 @@ I initially worked with the Forearm data because it was a smaller dataset that w
 
 <img alt="model summary" src='data/figures/second_128.png' width=300 height=225/><img alt="model summary" src='data/figures/second_ROC_128.png' width=300/>
 
-From all this exploration and model testing, I surmised that there was no reason to not go ahead with image size of 64x64.
+From all this exploration and model testing, I surmised that there was no reason to not go ahead with image size of 64x64. Also note that it took multiple epochs for the model to start learning anything.
 
 As you can see, nothing looks super promising at this point, with all accuracy, loss, and ROC plots looking similar. There was also the issue of tons of False Negative. A typical exampe on the Forearm data would contain 20-30% of the predictions as FN.
 
@@ -88,6 +96,10 @@ At this point. I decided to use all positive and negative labels for all bones. 
 
 
 <img alt="worst confusion" src='data/images_for_readme/confusion_accuracy_64_64_64.png' height = 125/>
+
+Things are definitely looking better on the full dataset. Less overfitting, better results in all other metrics. Recall is still an issue, and we saw that once again in the confusion matrix.
+
+At this point, I decided to look at all the False Negatives in the validation set, hoping to find a pattern, and hoping to be able to change the threshold for prediction a bit. What I found, when looking specifically at the 0.40-0.499 prediction thresholds was that there was a near even split of False Negatives and True negatives. This meant that I couldn't get any significant reductions in False Negatives without equally increasing False Positives. While I still consider this a worthwhile tradeoff for this scenario, I decided to hold off on tweaking threshold predictions for now.
 
 
 ### Example of a bad False Negative

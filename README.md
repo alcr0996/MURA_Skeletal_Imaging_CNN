@@ -1,6 +1,6 @@
 # MURA Skeletal Imaging CNN
 
-<img alt="buterfly hands" src='MURA_images/train/XR_HAND/patient00588/study1_positive/image2.png' width=900 height=600>
+<img alt="butterfly hands" src='MURA_images/train/XR_HAND/patient00588/study1_positive/image2.png' width=900 height=600>
 
 
 ## Table of Contents
@@ -60,7 +60,7 @@ From the initial EDA, I started to build my model, but before I got too far, I w
 
 Looking good. On to selecting what image size to use. The initial paper provided from the data link used images that were 224x224. I certainly wanted to avoid that, so took a quick glance at my options.
 
-<img alt="fucked up finger x-ray" src='data/images_for_readme/Image_Rescaled.png' width = 600>
+<img alt="image size options" src='data/images_for_readme/Image_Rescaled.png' width = 600>
 
 I felt that the 32x32 option wasn't going to cut it for this dataset, but thought I might be able to get away with the 64x64. Regardless, I tried all the options here at one point or another.
 
@@ -68,7 +68,7 @@ I felt that the 32x32 option wasn't going to cut it for this dataset, but though
 
 I initially worked with the Forearm data because it was a smaller dataset that was not terribly balanced. I have been hesitant initially to balance classes with the organization of the files. Using this dataset, I tweaked my model, to find the best trade-off between image size, epochs, layers, and activations. In hindsight, I should have more time with multiple sets of images while tweaking the model.
 
-<img alt="KDE of hour and day" src='data/figures/figures_for_readme/sigmoid_cnn_64_64_2model_plot.png' width=500 height=1100>
+<img alt="model summary" src='data/figures/figures_for_readme/sigmoid_cnn_64_64_2model_plot.png' width=500 height=1100>
 
 ###  How does time of day influence response time?
 

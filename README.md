@@ -1,4 +1,5 @@
 # MURA Skeletal Imaging CNN
+![Butterfly Hands](MURA_images/train/XR_HAND/patient00588/study1_positive/image2.png)
 
 <img alt="butterfly hands" src='MURA_images/train/XR_HAND/patient00588/study1_positive/image2.png' width=900 height=600>
 

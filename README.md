@@ -8,9 +8,8 @@
 1. [Overview](#overview)
 2. [Data](#data)
 3. [First Glance](#first-glance)
-4. [When are incidents occurring?](#when-are-incidents-occurring?)
-5. [What is causing the increase in the Fall?](#what-is-causing-the-increase-in-the-fall?)
-6. [What next?](#what-next?)
+4. [On to the full data set](#on-to-the-full-dataset)
+5. [What next?](#what-next?)
 
 
 ## Overview
@@ -77,12 +76,35 @@ I initially worked with the Forearm data because it was a smaller dataset that w
 
 <img alt="model summary" src='data/figures/second_128.png' width=300 height=225/><img alt="model summary" src='data/figures/second_ROC_128.png' width=300/>
 
+From all this exploration and model testing, I surmised that there was no reason to not go ahead with image size of 64x64.
 
-##  On to the full data set
+As you can see, nothing looks super promising at this point, with all accuracy, loss, and ROC plots looking similar. There was also the issue of tons of False Negative. A typical exampe on the Forearm data would contain 20-30% of the predictions as FN.
+
+# On to the full data set
+
+At this point. I decided to use all positive and negative labels for all bones. I had initially held off on this, but then had the thought that breaks, fractures, and other abnormalities would share similar features, regardless of location.
 
 <img alt="full set" src='data/figures/sigmoid_all_classes_cnn_positive_negative_64x64_prec_acc_40.png' width=600 height=500/>
 
+<img alt="full set" src='data/figures/ROC_all_classes_sigmoid_pos_vs_neg_64_64_alt_thresholds.png' width=600 height=500/>
 
 
-## What next?
+<img alt="worst confusion" src='data/images_for_readme/confusion_accuracy_64_64_64.png' height = 125/>
 
+
+### Example of a bad False Negative
+<img alt="worst confusion" src='data/images_for_readme/wrong_images_all_64/wrong_image_189.png' width=300/>
+
+### Example of a False Negative that may not be wrong...
+
+<img alt="worst confusion" src='data/images_for_readme/wrong_images_all_64/wrong_image_223.png' width=300/>
+
+There are many images like this one. The concern is that since I labelled all images as positive/abnormal that were in a Positive Study directory, I may have created a number of False Negative. Similar issue for False Positives, but that is less concerning looking at the confusion matrix, and considering the repercussions of a False Positive in this scenario.
+
+# What next?
+
+- Find a way to treat each set of images for a study as a single image, or get a single prediction for a study.
+- Figure out how to balance classes if treating each study as a single datapoint.
+- Work on transfer learning, freezing layers, and building up the model.
+- Use a pre-trained classification model to compare results.
+- Apply some image visualization techniques to highlight the features the model is predicting on.

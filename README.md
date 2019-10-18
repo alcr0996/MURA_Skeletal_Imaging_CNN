@@ -14,11 +14,11 @@
 
 ## Overview
 
-There are millions of new musculoskeletal conditions/injuries each year. With that comes a plethora of images and eye strain. The goal of this project was to create a Convolutional Neural Network that could assist Radiologists in classifying X-Rays as normal or abnormal. With the end goal of creating a network that can pass on a recommendation to a radiologist, hopefully reducing time to analyze the image, while increasing accuracy.
+There are millions of new musculoskeletal conditions/injuries each year. With that comes a plethora of images and eye strain. The goal of this project was to create a Convolutional Neural Network that could assist Radiologists in classifying X-Rays as normal or abnormal. With the end goal of creating a network that can pass on a recommendation to a radiologist, hopefully reducing time to analyze the image, while increasing abnormality recognition.
 
 ## Data
 
-The data was obtained from the StanfordML group [here](https://stanfordmlgroup.github.io/competitions/mura/). The data was mostly images, with a couple of CSVs provided for image paths and targets.
+The data was obtained from the StanfordML group [here](https://stanfordmlgroup.github.io/competitions/mura/) - labelled MURA for *MU*sculoskeletal *RA*diography The data was mostly images, with a couple of CSVs provided for image paths and targets. The data included 15000 studies from 12000 patients, totalling 40.5 thousand images, split into 30000 training images, and 10000 testing images. These data were gathered beween 2001-2012.
 
 The images were separated into training and validation sets, with further separation for each class of X-Ray: Finger, Hand, Wrist, Forearm, Elbow, Humerus, and Shoulder.
 

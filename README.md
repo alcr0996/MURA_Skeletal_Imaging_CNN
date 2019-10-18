@@ -37,7 +37,9 @@ First I wanted to take a look at the directories, the number of images per direc
 
 The images provided were all over the spectrum in terms of quality. There were images with multiple images, sometimes overlaying each other...
 
-<img alt="hands" src='MURA_images/train/XR_FINGER/patient00195/study1_negative/image1.png' height = 406 width = 250><img alt="dark shoulder" src='MURA_images/train/XR_SHOULDER/patient00013/study1_positive/image1.png' width = 250 height = 406><img alt="stretched elbow" src='MURA_images/train/XR_ELBOW/patient00646/study1_positive/image2.png' width = 250 height = 406>
+<img alt="hands" src='MURA_images/train/XR_FINGER/patient00195/study1_negative/image1.png' height = 406 width = 250/>
+<img alt="dark shoulder" src='MURA_images/train/XR_SHOULDER/patient00013/study1_positive/image1.png' width = 250 height = 406/>
+<img alt="stretched elbow" src='MURA_images/train/XR_ELBOW/patient00646/study1_positive/image2.png' width = 250 height = 406/>
 
 
 On the whole, the images were not as contrived as the first example, but their image quality, contrast, brightness, and placement were not very well controlled.
@@ -49,7 +51,8 @@ From the initial EDA, I started to build my model, but before I got too far, I w
 
 
 <img alt="hand1" src='data/images_for_readme/hand_0_89.jpeg' width = 250/>
-<img alt="hand2" src='data/images_for_readme/hand_0_1735.jpeg' width = 250/><img alt="hand3" src='data/images_for_readme/hand_0_5052.jpeg' width = 250/>
+<img alt="hand2" src='data/images_for_readme/hand_0_1735.jpeg' width = 250/>
+<img alt="hand3" src='data/images_for_readme/hand_0_5052.jpeg' width = 250/>
 
 Looking good. On to selecting what image size to use. The initial paper provided from the data link used images that were 224x224. I certainly wanted to avoid that, so took a quick glance at my options.
 

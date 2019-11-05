@@ -5,3 +5,7 @@
 /data/models
 /data/wrong_images_all_100
 /data/wrong_images_all_64
+/data/all_train
+/data/all_valid
+/models
+*models

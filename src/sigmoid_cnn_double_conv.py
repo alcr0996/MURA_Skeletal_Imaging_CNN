@@ -24,6 +24,9 @@ from tensorflow.keras.utils import plot_model
 
 from sklearn.metrics import classification_report, confusion_matrix, roc_curve
 from sklearn.model_selection import train_test_split
+from plotter import plot_confusion_matrix
+import tensorflow_addons
+from tensorflow_addons.metrics import CohenKappa, F1Score
 
 
 if __name__ == "__main__":
@@ -35,10 +38,10 @@ if __name__ == "__main__":
 
     # dimensions of our images.
     img_width, img_height = 64, 64
-    train_data_dir = 'data/train_images/FOREARM'
-    validation_data_dir = 'data/valid_images/FOREARM'
-    nb_train_samples = 1830
-    nb_validation_samples = 301
+    train_data_dir = 'data/all_train'
+    validation_data_dir = 'data/all_train'
+    nb_train_samples = 43941
+    nb_validation_samples = 6394
     epochs = 50
     batch_size = 50
 

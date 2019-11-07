@@ -50,7 +50,7 @@ class ClassificationNet(object):
         preprocessing(function(img)): image preprocessing function
 
             """
-        self.project_name = project_name
+        self.project_name = 'Xception_class_170'
         self.target_size = target_size
         self.input_size = self.target_size + (3,) # target size with color channels
         self.train_datagen = ImageDataGenerator()
@@ -101,14 +101,14 @@ class ClassificationNet(object):
             self.train_folder,
             target_size=self.target_size,
             batch_size=self.batch_size,
-            class_mode='binary',
+            class_mode='categorical',
             shuffle=True)
 
         self.validation_generator = self.validation_datagen.flow_from_directory(
             self.validation_folder,
             target_size=self.target_size,
             batch_size=self.batch_size,
-            class_mode='binary',
+            class_mode='categorical',
             shuffle=False)
 
     def fit(self, train_folder, validation_folder, model_fxn, optimizer, epochs):
@@ -172,7 +172,7 @@ class ClassificationNet(object):
             validation_folder,
             target_size=self.target_size,
             batch_size=self.batch_size,
-            class_mode='binary',
+            class_mode='categorical',
             shuffle=False)
 
         metrics = model.evaluate_generator(validation_generator,
@@ -181,7 +181,7 @@ class ClassificationNet(object):
                                            verbose=1)
         print(f"validation loss: {metrics[0]} accuracy: {metrics[1]}")
 
-        return metrics
+        return metrics, validation_generator
 
     def print_model_layers(self, model, indices=0):
         """
@@ -263,7 +263,7 @@ class TransferClassificationNet(ClassificationNet):
         self.change_trainable_layers(model, freeze_indices[0])
 
         model.compile(optimizer=optimizers[0],
-                      loss='binary_crossentropy', metrics=['accuracy', Precision(), Recall()])
+                      loss='categorical_crossentropy', metrics=['accuracy', Precision(), Recall()])
 
         # Initialize tensorboard for monitoring
         tensorboard = tensorflow.keras.callbacks.TensorBoard(log_dir=self.project_name, 
@@ -302,7 +302,7 @@ class TransferClassificationNet(ClassificationNet):
         print('evaluating simple model')
         accuracy = self.evaluate_model(best_model, self.validation_folder)
         
-        return savename, history
+        return savename
 
     def change_trainable_layers(self, model, trainable_index):
         """
@@ -323,13 +323,13 @@ class TransferClassificationNet(ClassificationNet):
 
 
 def main():
-    train_folder = 'data/train_images/ELBOW'
-    validation_folder = 'data/train_images/ELBOW'
+    train_folder = 'data/all_train'
+    validation_folder = 'data/all_valid'
     # holdout_folder = 'food_data/data/holdout_small'
 
-    target_size = (128, 128)  # 299,299 is suggested for xception but is quite taxing on cpu
-    epochs = 5
-    batch_size = 16
+    target_size = (96, 96)  # 299,299 is suggested for xception but is quite taxing on cpu
+    epochs = 10
+    batch_size = 20
 
     model_fxn = create_model
     opt = Adam(lr=0.001)
@@ -342,7 +342,7 @@ def main():
     freeze_indices = [132, 126] # first unfreezing only head, then conv block 14
     optimizers = [Adam(lr=0.0006), Adam(lr=0.0001)] # keep learning rates low to keep from wrecking weights
 
-    warmup_epochs = 5
+    warmup_epochs = 0
     epochs = epochs - warmup_epochs
     transfer_model = TransferClassificationNet('transfer_test', target_size, 
                                                 augmentation_strength=0.2, 
@@ -355,48 +355,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()        
-        
-        # Y_pred = model.predict_generator(validation_generator, nb_validation_samples // batch_size+1)
-        # y_pred = np.where(Y_pred>=.50, 1, 0)
-    
-        # print('Classification Report')
-        # print(classification_report(validation_generator.classes, y_pred))
-
-        # print('Confusion Matrix')
-        # print(confusion_matrix(validation_generator.classes, y_pred))
-
-        # print('AUROC Score')
-        # print(roc_auc_score(validation_generator.classes, y_pred))
-
-        # print('Confusion Matrix')
-        # plot_confusion_matrix(validation_generator.classes, y_pred, title='Confusion matrix')
-        # plt.savefig('confusion_matrix_test.png')            # plot loss during training
-        
-        # fig, ax = plt.subplots(4, figsize = (12, 8))
-        # ax[0].set_title('Loss')
-        # ax[0].set_xticks(range(0,11,1))
-        # ax[0].plot(history.history['loss'], label='train')
-        # ax[0].plot(history.history['val_loss'], label='test')
-        # ax[0].legend()
-        
-        # # plot accuracy during training
-        # ax[1].set_xticks(range(0,11,1))
-        # ax[1].set_title('Accuracy')
-        # ax[1].plot(history.history['accuracy'], label='train')
-        # ax[1].plot(history.history['val_accuracy'], label='test')
-        # ax[1].legend()
-        
-        # ax[2].set_xticks(range(0,11,1))
-        # ax[2].set_title('Precision')
-        # ax[2].plot(history.history['precision'], label='train')
-        # ax[2].plot(history.history['val_precision'], label='test')
-        # ax[2].legend()
-        
-        # ax[3].set_xticks(range(0,11,1))
-        # ax[3].set_title('Recall')
-        # ax[3].plot(history.history['recall'], label='train')
-        # ax[3].plot(history.history['val_recall'], label='test')
-        # ax[3].legend()
-        # plt.tight_layout()
-        # plt.savefig('model_test.png')
+    main()

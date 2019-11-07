@@ -27,5 +27,5 @@ def create_model(input_size, n_categories):
     model.add(Activation('relu'))
     model.add(Dropout(0.5))
     model.add(Dense(n_categories))
-    model.add(Activation('softmax'))
+    model.add(Activation('sigmoid'))
     return model

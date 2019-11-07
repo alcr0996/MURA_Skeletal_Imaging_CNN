@@ -45,18 +45,18 @@ if __name__ == "__main__":
 
     # dimensions of our images.
     img_width, img_height = 64, 64
-    train_data_dir = 'data/train_images/WRIST'
-    validation_data_dir = 'data/valid_images/WRIST'
-    nb_train_samples = 11538
-    nb_validation_samples = 659
-    epochs = 30
+    train_data_dir = 'data/all_train'
+    validation_data_dir = 'data/all_valid'
+    nb_train_samples = 43849
+    nb_validation_samples = 3196
+    epochs = 50
     batch_size = 20 
 
 
     model = Sequential()
 
     model.add(Conv2D(64, (3, 3), input_shape=(img_width, img_height, 3),padding='valid', name = 'first_cnn_layer'))
-    model.add(Activation('relu', name = 'first_cnn_activation'))
+    model.add(Activation(LeakyReLU(), name = 'first_cnn_activation'))
     model.add(MaxPooling2D(pool_size=(2, 2), name = 'first_pooling_layer'))
 
     model.add(Conv2D(64, (3, 3) ,padding='same', name = 'first_1_cnn_layer'))
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     model.add(MaxPooling2D(pool_size=(1, 1), name = 'first_1_pooling_layer'))
 
     model.add(Conv2D(128, (3, 3), padding='same', name = 'second_cnn_layer'))
-    model.add(Activation('relu', name = 'second_cnn_activation'))
+    model.add(Activation(LeakyReLU(), name = 'second_cnn_activation'))
     model.add(MaxPooling2D(pool_size=(2, 2), name = 'second_pooling_layer'))
 
     model.add(Conv2D(128, (3, 3), padding='same', name = 'second_2_cnn_layer'))
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     model.add(MaxPooling2D(pool_size=(1, 1), name = 'second_2_pooling_layer'))
 
     model.add(Conv2D(256, (3, 3), padding='same', name = 'third_cnn_layer'))
-    model.add(Activation('relu', name = 'third_cnn_activation'))
+    model.add(Activation(LeakyReLU(), name = 'third_cnn_activation'))
     model.add(MaxPooling2D(pool_size=(2, 2), name = 'third_pooling_layer'))
 
     model.add(Conv2D(256, (3, 3), padding='same', name = 'fourth_cnn_layer'))
@@ -98,12 +98,12 @@ if __name__ == "__main__":
     write_graph=True,
     update_freq='epoch')
 
-    savename = "{0}_best.h5".format('6_class_model')
+    savename = "{0}_best.h5".format('sigmoid_cnn_'+str(img_width))
     
-    model.compile(loss='binary_crossentropy',optimizer=RAdam(total_steps=10000, warmup_proportion=0.1, min_lr=1e-5),
+    model.compile(loss='binary_crossentropy',optimizer=RAdam(total_steps=10000, warmup_proportion=0.1, min_lr=0.000005),
                 metrics=['accuracy', keras.metrics.Precision(), keras.metrics.Recall()])
-    # model.load_weights('data/model_weights/sigmoid_cnn.h5')
-    model_name = 'capstone3_sigmoid_cnn_64'
+    # model.load_weights('sigmoid_cnn.h5')
+    model_name = 'capstone3_sigmoid_cnn_128'
     model.save_weights('data/model_weights/'+model_name+'.h5')
     model.save('data/cnn_models/'+model_name+'.h5')
 
@@ -149,10 +149,11 @@ if __name__ == "__main__":
     steps_per_epoch= nb_train_samples // batch_size,
     epochs=epochs,
     validation_data=validation_generator,
-    validation_steps=nb_validation_samples // batch_size)
+    validation_steps=nb_validation_samples // batch_size,
+    callbacks=[mc, tensorboard])
 
     validation_generator.class_indices
-
+    
     # plot loss during training
     fig, ax = plt.subplots(4, figsize = (12, 8))
     ax[0].set_title('Loss')
@@ -161,6 +162,7 @@ if __name__ == "__main__":
     ax[0].plot(history.history['val_loss'], label='test')
     ax[0].legend()
 
+    i = 6
     # plot accuracy during training
     ax[1].set_xticks(range(0,epochs+1,5))
     ax[1].set_title('Accuracy')
@@ -170,14 +172,14 @@ if __name__ == "__main__":
 
     ax[2].set_xticks(range(0,epochs+1,5))
     ax[2].set_title('Precision')
-    ax[2].plot(history.history['precision_7'], label='train')
-    ax[2].plot(history.history['val_precision_7'], label='test')
+    ax[2].plot(history.history['precision'], label='train')
+    ax[2].plot(history.history['val_precision'], label='test')
     ax[2].legend()
 
     ax[3].set_xticks(range(0,epochs+1,5))
     ax[3].set_title('Recall')
-    ax[3].plot(history.history['recall_7'], label='train')
-    ax[3].plot(history.history['val_recall_7'], label='test')
+    ax[3].plot(history.history['recall'], label='train')
+    ax[3].plot(history.history['val_recall'], label='test')
     ax[3].legend()
 
     plt.tight_layout()
@@ -190,8 +192,8 @@ if __name__ == "__main__":
     cm = confusion_matrix(validation_generator.classes, y_pred)
     print (cm)
 
-    plot_confusion_matrix(validation_generator.classes, y_pred)
-    plt.savefig('Capstone3_CM_all_classes_'+str(img_height)+'.png')
+#     plot_confusion_matrix(validation_generator.classes, y_pred)
+#     plt.savefig('Capstone3_CM_all_classes_'+str(img_height)+'.png')
 
     fpr, tpr, thresholds = roc_curve(validation_generator.classes, Y_pred)
     fig, ax = plt.subplots()
@@ -206,10 +208,15 @@ if __name__ == "__main__":
 
     print('AUROC Score')
     print(roc_auc_score(validation_generator.classes, y_pred))
-
+    y_true = validation_generator.classes.reshape(-1,1).flatten()
+    y_pred_ck = y_pred.reshape(-1,1).flatten().copy()
     m = tfa.metrics.CohenKappa(num_classes=2)
-    m.update_state(validation_generator.classes, y_pred, sample_weight=weights)
-    print('Final result: ', m.result().numpy())
+    m.update_state(y_true, y_pred_ck)
+    print('Final result Cohens Kappa: ', m.result().numpy())
+    # F1 weighted
+#     output = tfa.metrics.F1Score(num_classes=2,average='weighted')
+#     output.update_state(y_true, y_pred_ck)
+#     print('F1 Weighted score is: ', output.result().numpy()) # 0.6666667
 
     model.summary()
 

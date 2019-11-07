@@ -9,3 +9,6 @@
 /data/all_valid
 /models
 *models
+/simple_class_test
+/logdir
+/transfer_test

@@ -79,9 +79,9 @@ def balance_classes(datagen, directory, word_list):
             if 0 in count_classes:
                 count_classes.pop(0)
         difference = abs(count_classes[0] - count_classes[1])
-        if count_classes[0] < count_classes[1]:
-            for r, d, files in os.walk('data/train_images/'+word+'/negative'):
-                for i in range(difference):
+        if count_classes[0] > count_classes[1]:
+            for i in range(difference):
+                for r, d, files in os.walk('data/train_images/'+word+'/negative'):
                     filepath = 'data/train_images/'+word+'/negative/'
                     img_name = random.choice(files)
                     img = io.imread(filepath+img_name)
@@ -92,9 +92,9 @@ def balance_classes(datagen, directory, word_list):
                                 save_prefix='altered_negative', save_format='png'
                                 )
                     dumb[0]
-        elif count_classes[1] < count_classes[0]:
-            for r, d, files in os.walk('data/train_images/'+word+'/positive'):
-                for i in range(difference):
+        elif count_classes[1] > count_classes[0]:
+            for i in range(difference):
+                for r, d, files in os.walk('data/train_images/'+word+'/positive'):
                     filepath = 'data/train_images/'+word+'/positive/'
                     img_name = random.choice(files)
                     img = io.imread(filepath+img_name)
@@ -102,7 +102,7 @@ def balance_classes(datagen, directory, word_list):
                     x = x.reshape((1,) + x.shape)
                     dumb = datagen.flow(x, batch_size=1,
                                 save_to_dir=directory+'/'+word+'/positive/',
-                                save_prefix='altered_positive_3', save_format='png'
+                                save_prefix='altered_positive', save_format='png'
                                 )
                     dumb[0]
 
@@ -112,7 +112,7 @@ if __name__ == "__main__":
     # copy_move_files('MURA_images/valid/', 'data/valid_images/')
 
     copy_move_files_all_class('data/train_images', 'data/all_train')
-    # copy_move_files_all_class('data/valid_images', 'data/all_valid')
+    copy_move_files_all_class('data/valid_images', 'data/all_valid')
 
     # copy_move_files_all_bones('MURA_images/train', 'data/train_images/all_bones_train')
     # copy_move_files_all_bones('MURA_images/valid', 'data/valid_images/all_bones_valid')
@@ -129,5 +129,5 @@ if __name__ == "__main__":
             fill_mode='nearest'
             )
     
-    bone_list = ['ELBOW', 'FINGER', 'HAND', 'WRIST', 'FOREARM', 'HUMERUS', 'SHOULDER']
+    bone_list = ['ELBOW', 'SHOULDER', 'FINGER', 'HAND', 'WRIST', 'FOREARM', 'HUMERUS']
     # balance_classes(datagen, 'data/train_images', bone_list)

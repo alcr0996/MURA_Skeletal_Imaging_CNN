@@ -10,7 +10,8 @@ from skimage import color, transform, restoration, io, feature
 
 
 def copy_move_files(path, target_dir):
-    word_list = ['ELBOW','FINGER', 'HAND', 'WRIST', 'FOREARM', 'HUMERUS', 'SHOULDER'] 
+    #word_list = ['ELBOW','FINGER', 'HAND', 'WRIST', 'FOREARM', 'HUMERUS', 'SHOULDER']
+    word_list = ['ELBOW', 'SHOULDER']
     for word in word_list:
         i = 1
         directory_list = [x[0] for x in os.walk(path+'XR_'+word)]
@@ -57,7 +58,8 @@ def copy_move_files_all_class(path, target_dir):
             continue
 
 def copy_move_files_all_bones(path, target_dir):
-    word_list = ['ELBOW', 'FINGER', 'HAND', 'WRIST', 'FOREARM', 'HUMERUS', 'SHOULDER'] 
+    word_list = ['ELBOW', 'FINGER', 'HAND', 'WRIST', 'FOREARM', 'HUMERUS', 'SHOULDER']
+    # word_list = ['FINGER', 'Shoulder']
     for word in word_list:
         i = 1
         directory_list = [x[0] for x in os.walk(path)]
@@ -108,11 +110,11 @@ def balance_classes(datagen, directory, word_list):
 
 
 if __name__ == "__main__":
-    # copy_move_files('MURA_images/train/', 'data/train_images/')
+    copy_move_files('MURA_images/train/', 'filler/')
     # copy_move_files('MURA_images/valid/', 'data/valid_images/')
 
-    copy_move_files_all_class('data/train_images', 'data/all_train')
-    copy_move_files_all_class('data/valid_images', 'data/all_valid')
+    # copy_move_files_all_class('data/train_images', 'data/all_train')
+    # copy_move_files_all_class('data/valid_images', 'data/all_valid')
 
     # copy_move_files_all_bones('MURA_images/train', 'data/train_images/all_bones_train')
     # copy_move_files_all_bones('MURA_images/valid', 'data/valid_images/all_bones_valid')

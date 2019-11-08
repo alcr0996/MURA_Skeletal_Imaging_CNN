@@ -44,13 +44,15 @@ if __name__ == "__main__":
     # X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
 
     # dimensions of our images.
-    img_width, img_height = 64, 64
-    train_data_dir = 'data/all_train'
-    validation_data_dir = 'data/all_valid'
-    nb_train_samples = 43849
-    nb_validation_samples = 3196
-    epochs = 50
-    batch_size = 20 
+    img_width, img_height = 96, 96
+    train_data_dir = 'data/train_images/FOREARM'
+    validation_data_dir = 'data/valid_images/FOREARM'
+    nb_train_samples = 2272
+    nb_validation_samples = 301
+    epochs = 20
+    batch_size = 20
+    model_name = 'sigmoid_cnn_96_forearm'
+
 
 
     model = Sequential()
@@ -98,14 +100,14 @@ if __name__ == "__main__":
     write_graph=True,
     update_freq='epoch')
 
-    savename = "{0}_best.h5".format('sigmoid_cnn_'+str(img_width))
     
-    model.compile(loss='binary_crossentropy',optimizer=RAdam(total_steps=10000, warmup_proportion=0.1, min_lr=0.000005),
+    model.compile(loss='binary_crossentropy',optimizer=RAdam(total_steps=10000, warmup_proportion=0.1, min_lr=0.00001),
                 metrics=['accuracy', keras.metrics.Precision(), keras.metrics.Recall()])
     # model.load_weights('sigmoid_cnn.h5')
-    model_name = 'capstone3_sigmoid_cnn_128'
     model.save_weights('data/model_weights/'+model_name+'.h5')
     model.save('data/cnn_models/'+model_name+'.h5')
+    
+    savename = "{0}_best.h5".format(model_name)
 
     # this is the augmentation configuration we will use for training
     train_datagen = ImageDataGenerator(
@@ -157,33 +159,33 @@ if __name__ == "__main__":
     # plot loss during training
     fig, ax = plt.subplots(4, figsize = (12, 8))
     ax[0].set_title('Loss')
-    ax[0].set_xticks(range(0,epochs+1,5))
+    ax[0].set_xticks(range(0,epochs+1,1))
     ax[0].plot(history.history['loss'], label='train')
     ax[0].plot(history.history['val_loss'], label='test')
     ax[0].legend()
 
     i = 6
     # plot accuracy during training
-    ax[1].set_xticks(range(0,epochs+1,5))
+    ax[1].set_xticks(range(0,epochs+1,1))
     ax[1].set_title('Accuracy')
     ax[1].plot(history.history['accuracy'], label='train')
     ax[1].plot(history.history['val_accuracy'], label='test')
     ax[1].legend()
 
-    ax[2].set_xticks(range(0,epochs+1,5))
+    ax[2].set_xticks(range(0,epochs+1,1))
     ax[2].set_title('Precision')
     ax[2].plot(history.history['precision'], label='train')
     ax[2].plot(history.history['val_precision'], label='test')
     ax[2].legend()
 
-    ax[3].set_xticks(range(0,epochs+1,5))
+    ax[3].set_xticks(range(0,epochs+1,1))
     ax[3].set_title('Recall')
     ax[3].plot(history.history['recall'], label='train')
     ax[3].plot(history.history['val_recall'], label='test')
     ax[3].legend()
 
     plt.tight_layout()
-    plt.savefig('capstone3_'+str(img_height)+'_all_classes.png')
+    plt.savefig(model_name+'_all_classes.png')
 
     # Confusion Matrix and Classification Report
     Y_pred = model.predict_generator(validation_generator, nb_validation_samples // batch_size+1)
@@ -198,8 +200,8 @@ if __name__ == "__main__":
     fpr, tpr, thresholds = roc_curve(validation_generator.classes, Y_pred)
     fig, ax = plt.subplots()
     ax.plot(fpr, tpr)
-    ax.set_title('ROC - All Classes Positive vs. Negative '+str(img_height))
-    plt.savefig('Capstone3_ROC_all_classes_sigmoid_'+str(img_height)+'.png')
+    ax.set_title('ROC - All Classes Positive vs. Negative '+model_name)
+    plt.savefig(model_name+'.png')
     
     target_names = ['positive', 'negative']
     print(classification_report(validation_generator.classes, y_pred, target_names=target_names))

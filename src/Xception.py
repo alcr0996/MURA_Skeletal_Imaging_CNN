@@ -327,7 +327,7 @@ def main():
     validation_folder = 'data/all_valid'
     # holdout_folder = 'food_data/data/holdout_small'
 
-    target_size = (96, 96)  # 299,299 is suggested for xception but is quite taxing on cpu
+    target_size = (71, 71)  # 299,299 is suggested for xception but is quite taxing on cpu
     epochs = 10
     batch_size = 20
 

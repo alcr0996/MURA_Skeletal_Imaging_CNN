@@ -47,13 +47,14 @@ if __name__ == "__main__":
     # X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
 
     # dimensions of our images.
-    img_width, img_height = 224, 224
-    train_data_dir = 'data/all_train'
-    validation_data_dir = 'data/all_valid'
-    nb_train_samples = 43849
-    nb_validation_samples = 3196
-    epochs = 30
-    batch_size = 20 
+    img_width, img_height = 96, 96
+    train_data_dir = 'data/train_images/FOREARM'
+    validation_data_dir = 'data/valid_images/FOREARM'
+    nb_train_samples = 11436
+    nb_validation_samples = 659
+    epochs = 20
+    batch_size = 20
+    model_name = 'Xception_96_forearm'
 
 
     model = Sequential()
@@ -82,14 +83,15 @@ if __name__ == "__main__":
     write_graph=True,
     update_freq='epoch')
 
-    savename = "{0}_best.h5".format('Xception_imagenet_'+str(img_width))
     
     model.compile(loss='binary_crossentropy',optimizer=RAdam(total_steps=10000, warmup_proportion=0.1, min_lr=0.000005),
                 metrics=['accuracy', keras.metrics.Precision(), keras.metrics.Recall()])
     # model.load_weights('sigmoid_cnn.h5')
-    model_name = 'Xception_128'
+
     model.save_weights('data/model_weights/'+model_name+'.h5')
     model.save('data/cnn_models/'+model_name+'.h5')
+
+    savename = "{0}_best.h5".format(model_name)
 
     # this is the augmentation configuration we will use for training
     train_datagen = ImageDataGenerator(
@@ -167,10 +169,10 @@ if __name__ == "__main__":
     ax[3].legend()
 
     plt.tight_layout()
-    plt.savefig(model_name+str(img_height)+'_all_classes.png')
+    plt.savefig(model_name+'_all_classes.png')
 
     # Confusion Matrix and Classification Report
-    Y_pred = model.predict_generator(validation_generator, nb_validation_samples // batch_size+1)
+    Y_pred = model.predict_generator(validation_generator, nb_validation_samples // batch_size)#+1
     y_pred = np.where(Y_pred>=.50, 1, 0)
     print('Confusion Matrix')
     cm = confusion_matrix(validation_generator.classes, y_pred)
@@ -183,7 +185,7 @@ if __name__ == "__main__":
     fig, ax = plt.subplots()
     ax.plot(fpr, tpr)
     ax.set_title('ROC - All Classes Positive vs. Negative '+str(img_height))
-    plt.savefig('Capstone3_ROC_all_classes_sigmoid_'+str(img_height)+'.png')
+    plt.savefig(model_name+'_ROC.png')
     
     target_names = ['positive', 'negative']
     print(classification_report(validation_generator.classes, y_pred, target_names=target_names))

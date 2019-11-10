@@ -45,16 +45,16 @@ if __name__ == "__main__":
 
     # dimensions of our images.
     img_width, img_height = 96, 96
-    train_data_dir = 'data/train_images/FOREARM'
-    validation_data_dir = 'data/valid_images/FOREARM'
-    nb_train_samples = 2272
-    nb_validation_samples = 301
-    epochs = 20
+    train_data_dir = 'data/train_images/HUMERUS'
+    validation_data_dir = 'data/valid_images/HUMERUS'
+    nb_train_samples = 1324
+    nb_validation_samples = 288
+    epochs = 30
     batch_size = 20
-    model_name = 'sigmoid_cnn_96_forearm'
+    model_name = 'sigmoid_cnn_96_humerus_2'
 
 
-
+ 
     model = Sequential()
 
     model.add(Conv2D(64, (3, 3), input_shape=(img_width, img_height, 3),padding='valid', name = 'first_cnn_layer'))
@@ -101,11 +101,11 @@ if __name__ == "__main__":
     update_freq='epoch')
 
     
-    model.compile(loss='binary_crossentropy',optimizer=RAdam(total_steps=10000, warmup_proportion=0.1, min_lr=0.00001),
+    model.compile(loss='binary_crossentropy',optimizer=RAdam(total_steps=10000, warmup_proportion=0.1, min_lr=0.0001),
                 metrics=['accuracy', keras.metrics.Precision(), keras.metrics.Recall()])
-    # model.load_weights('sigmoid_cnn.h5')
-    model.save_weights('data/model_weights/'+model_name+'.h5')
-    model.save('data/cnn_models/'+model_name+'.h5')
+    # model.load_weights('sigmoid_cnn_96_hand_2_best.h5')
+    # model.save_weights('data/model_weights/'+model_name+'.h5')
+    # model.save('data/cnn_models/'+model_name+'.h5')
     
     savename = "{0}_best.h5".format(model_name)
 

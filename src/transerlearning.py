@@ -48,13 +48,13 @@ if __name__ == "__main__":
 
     # dimensions of our images.
     img_width, img_height = 96, 96
-    train_data_dir = 'data/train_images/FOREARM'
-    validation_data_dir = 'data/valid_images/FOREARM'
-    nb_train_samples = 11436
-    nb_validation_samples = 659
-    epochs = 20
+    train_data_dir = 'data/train_images/HAND'
+    validation_data_dir = 'data/valid_images/HAND'
+    nb_train_samples = 8098
+    nb_validation_samples = 460
+    epochs = 10
     batch_size = 20
-    model_name = 'Xception_96_forearm'
+    model_name = 'Xception_96_hand_fin'
 
 
     model = Sequential()
@@ -84,7 +84,7 @@ if __name__ == "__main__":
     update_freq='epoch')
 
     
-    model.compile(loss='binary_crossentropy',optimizer=RAdam(total_steps=10000, warmup_proportion=0.1, min_lr=0.000005),
+    model.compile(loss='binary_crossentropy',optimizer=RAdam(total_steps=10000, warmup_proportion=0.1, min_lr=0.00001),
                 metrics=['accuracy', keras.metrics.Precision(), keras.metrics.Recall()])
     # model.load_weights('sigmoid_cnn.h5')
 
@@ -172,7 +172,7 @@ if __name__ == "__main__":
     plt.savefig(model_name+'_all_classes.png')
 
     # Confusion Matrix and Classification Report
-    Y_pred = model.predict_generator(validation_generator, nb_validation_samples // batch_size)#+1
+    Y_pred = model.predict_generator(validation_generator, nb_validation_samples // batch_size)#+1)
     y_pred = np.where(Y_pred>=.50, 1, 0)
     print('Confusion Matrix')
     cm = confusion_matrix(validation_generator.classes, y_pred)

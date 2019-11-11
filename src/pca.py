@@ -158,11 +158,12 @@ if __name__ == "__main__":
     plt.savefig('pca_2_comp_all_train.png')
 
     # T-SNE on all datapoints - takes way too long
-    # tsne_all = TSNE(random_state=RS, verbose=1).fit_transform(x_subset)
-    # scatter_pca(tsne_all, y_subset)
-    # plt.savefig('tsne_all_train_subset.png')
-    # time_start = time.time()
+    tsne_all = TSNE(random_state=RS, verbose=1).fit_transform(x_subset)
+    scatter_pca(tsne_all, y_subset)
+    plt.savefig('tsne_all_train_subset.png')
+    
     # T-SNE w/ PCA 
+    time_start = time.time()
     pca_50 = PCA(n_components=50)
     pca_result_50 = pca_50.fit_transform(X_train)
     print ('PCA done! Time elapsed: {} seconds'.format(time.time()-time_start))

@@ -35,26 +35,7 @@ import PIL
 from PIL import Image
 from plotter import plot_confusion_matrix
 
-# def create_model(activations, model_name)
-
-if __name__ == "__main__":
-    # df = pd.read_csv('data/train_dir_paths/')
-    # y = df.pop('target')
-    # X = df
-    # X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
-
-    # dimensions of our images.
-    img_width, img_height = 96, 96
-    train_data_dir = 'data/train_images/HUMERUS'
-    validation_data_dir = 'data/valid_images/HUMERUS'
-    nb_train_samples = 1324
-    nb_validation_samples = 288
-    epochs = 30
-    batch_size = 20
-    model_name = 'sigmoid_cnn_96_humerus_2'
-
-
- 
+def create_sigmoid_cnn()
     model = Sequential()
 
     model.add(Conv2D(64, (3, 3), input_shape=(img_width, img_height, 3),padding='valid', name = 'first_cnn_layer'))
@@ -93,7 +74,22 @@ if __name__ == "__main__":
 
     model.add(Dense(1, name = 'final_sigmoid_layer'))
     model.add(Activation('sigmoid', name = 'sigmoid_activation'))
+
+if __name__ == "__main__":
+
+    # dimensions of images.
+    img_width, img_height = 96, 96
+    train_data_dir = 'data/train_images/HUMERUS'
+    validation_data_dir = 'data/valid_images/HUMERUS'
+    nb_train_samples = 1324
+    nb_validation_samples = 288
+    epochs = 30
+    batch_size = 20
+    model_name = 'sigmoid_cnn_96_humerus_2'
         
+    model = create_sigmoid_cnn()
+    model_name = 'sigmoid_cnn_96'
+    
     tensorboard = callbacks.TensorBoard(
     log_dir='logdir',
     histogram_freq=0, 
@@ -104,8 +100,8 @@ if __name__ == "__main__":
     model.compile(loss='binary_crossentropy',optimizer=RAdam(total_steps=10000, warmup_proportion=0.1, min_lr=0.0001),
                 metrics=['accuracy', keras.metrics.Precision(), keras.metrics.Recall()])
     # model.load_weights('sigmoid_cnn_96_hand_2_best.h5')
-    # model.save_weights('data/model_weights/'+model_name+'.h5')
-    # model.save('data/cnn_models/'+model_name+'.h5')
+    model.save_weights('data/model_weights/'+model_name+'.h5')
+    model.save('data/cnn_models/'+model_name+'.h5')
     
     savename = "{0}_best.h5".format(model_name)
 
@@ -164,20 +160,19 @@ if __name__ == "__main__":
     ax[0].plot(history.history['val_loss'], label='test')
     ax[0].legend()
 
-    i = 6
     # plot accuracy during training
     ax[1].set_xticks(range(0,epochs+1,1))
     ax[1].set_title('Accuracy')
     ax[1].plot(history.history['accuracy'], label='train')
     ax[1].plot(history.history['val_accuracy'], label='test')
     ax[1].legend()
-
+    # plot precision during training
     ax[2].set_xticks(range(0,epochs+1,1))
     ax[2].set_title('Precision')
     ax[2].plot(history.history['precision'], label='train')
     ax[2].plot(history.history['val_precision'], label='test')
     ax[2].legend()
-
+    # plot recall during training
     ax[3].set_xticks(range(0,epochs+1,1))
     ax[3].set_title('Recall')
     ax[3].plot(history.history['recall'], label='train')
@@ -187,40 +182,38 @@ if __name__ == "__main__":
     plt.tight_layout()
     plt.savefig(model_name+'_all_classes.png')
 
-    # Confusion Matrix and Classification Report
+    # Confusion Matrix
     Y_pred = model.predict_generator(validation_generator, nb_validation_samples // batch_size+1)
     y_pred = np.where(Y_pred>=.50, 1, 0)
     print('Confusion Matrix')
     cm = confusion_matrix(validation_generator.classes, y_pred)
     print (cm)
 
-#     plot_confusion_matrix(validation_generator.classes, y_pred)
-#     plt.savefig('Capstone3_CM_all_classes_'+str(img_height)+'.png')
-
+    plot_confusion_matrix(validation_generator.classes, y_pred)
+    plt.savefig('Capstone3_CM_all_classes_'+str(img_height)+'.png')
+    
+    #ROC
     fpr, tpr, thresholds = roc_curve(validation_generator.classes, Y_pred)
     fig, ax = plt.subplots()
     ax.plot(fpr, tpr)
     ax.set_title('ROC - All Classes Positive vs. Negative '+model_name)
     plt.savefig(model_name+'.png')
-    
-    target_names = ['positive', 'negative']
-    print(classification_report(validation_generator.classes, y_pred, target_names=target_names))
 
+    #AUROC Score
     plot_model(model, to_file=model_name+'model_plot.png', show_shapes=True, show_layer_names=True)
-
     print('AUROC Score')
     print(roc_auc_score(validation_generator.classes, y_pred))
+    
+    # Classification Report
+    target_names = ['positive', 'negative']
+    print(classification_report(validation_generator.classes, y_pred, target_names=target_names))
+    
+    #CohenKappa
     y_true = validation_generator.classes.reshape(-1,1).flatten()
     y_pred_ck = y_pred.reshape(-1,1).flatten().copy()
     m = tfa.metrics.CohenKappa(num_classes=2)
     m.update_state(y_true, y_pred_ck)
     print('Final result Cohens Kappa: ', m.result().numpy())
-    # F1 weighted
-#     output = tfa.metrics.F1Score(num_classes=2,average='weighted')
-#     output.update_state(y_true, y_pred_ck)
-#     print('F1 Weighted score is: ', output.result().numpy()) # 0.6666667
-
-    model.summary()
 
 
    

@@ -7,7 +7,11 @@ import pdb
 
 
 def resize_multiple_images(src_path, dst_path):
-    # Here src_path is the location where images are saved.
+    """
+    Resize images in a directory to (96, 96)
+    src_path: directory images are in
+    dst_path: directory to copy and move images to
+    """
     for filename in os.listdir(src_path):
         img=Image.open(src_path+'/'+filename)
         new_img = img.resize((96,96))
@@ -20,6 +24,11 @@ def resize_multiple_images(src_path, dst_path):
 
 
 def rename_multiple_files(path,obj):
+    """
+    Rename image files with class.
+    path: directory of images to rename
+    obj: class name to add to beginning of image filename
+    """
     i=0
     for filename in os.listdir(path):
         try:

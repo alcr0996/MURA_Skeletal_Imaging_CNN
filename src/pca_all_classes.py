@@ -20,9 +20,12 @@ sns.set_context("notebook", font_scale=1.5,
 RS = 123
 
 def get_data_classes(path):
+    """
+    Labels all data with bone + pos/neg for class assignment
+    for unsupervised learning on bones + class (positive/negative).
+    """
     all_images_as_array=[]
     label=[]
-    # pdb.set_trace()
     for filename in os.listdir(path):
         try:
             if re.match(r'ELBOWnegative',filename):
@@ -65,6 +68,10 @@ def get_data_classes(path):
     return np.array(all_images_as_array), np.array(label)
 
 def get_data_bones(path):
+    """
+    Labels all data with bone for class assignment
+    for unsupervised learning on all bones.
+    """
     all_images_as_array=[]
     label=[]
     # pdb.set_trace()
@@ -127,53 +134,44 @@ def scatter_pca(x, colors):
 
     return f, ax, sc, txts
 
-
-
-
 if __name__ == "__main__":
 
     # # create training data
     train_data = "data/train_images/PCA/all/"
     X_train, y_train = get_data_classes(train_data)
 
+    name = 'all_classes'
+
     time_start = time.time()
 
     x_subset = X_train[0:20000]
     y_subset = y_train[0:20000]
 
-    # pca = PCA(n_components=2)
-    # pca_result = pca.fit_transform(X_train)
+    pca = PCA(n_components=2)
+    pca_result = pca.fit_transform(X_train)
 
-    #print ('PCA done! Time elapsed: {} seconds'.format(time.time()-time_start))
+    print ('PCA done! Time elapsed: {} seconds'.format(time.time()-time_start))
 
-    # pca_df = pd.DataFrame(columns = ['pca1','pca2','pca3'])#,'pca4','pca5','pca6','pca7','pca8','pca9','pca10'])
+    pca_df = pd.DataFrame(columns = ['pca1','pca2','pca3'])#,'pca4','pca5','pca6','pca7','pca8','pca9','pca10'])
 
-    # pca_df['pca1'] = pca_result[:,0]
-    # pca_df['pca2'] = pca_result[:,1]
-    # pca_df['pca3'] = pca_result[:,2]
-    # pca_df['pca4'] = pca_result[:,3]
-    # pca_df['pca5'] = pca_result[:,4]
-    # pca_df['pca6'] = pca_result[:,5]
-    # pca_df['pca7'] = pca_result[:,6]
-    # pca_df['pca8'] = pca_result[:,7]
-    # pca_df['pca9'] = pca_result[:,8]
-    # pca_df['pca10'] = pca_result[:,9]
+    pca_df['pca1'] = pca_result[:,0]
+    pca_df['pca2'] = pca_result[:,1]
 
-    # print ('Variance explained per principal component: {}'.format(pca.explained_variance_ratio_))
-    # print(f'Total variance explained by 2 components: {sum(pca.explained_variance_ratio_)}')
-    
+    print ('Variance explained per principal component: {}'.format(pca.explained_variance_ratio_))
+    print(f'Total variance explained by 2 components: {sum(pca.explained_variance_ratio_)}')
     
     # taking top two principal components
-    # top_two_comp = pca_df[['pca1','pca2']]
-    # Visualizing the PCA output
-    # scatter_pca(top_two_comp.values, y_train)
-    # plt.savefig('pca_2_comp_all_classes.png')
+    top_two_comp = pca_df[['pca1','pca2']]
+    Visualizing the PCA output
+    scatter_pca(top_two_comp.values, y_train)
+    plt.savefig('pca_2_comp_'+name+'.png')
 
-    # T-SNE on all datapoints
-    # tsne_all = TSNE(random_state=RS, verbose=1).fit_transform(x_subset)
-    # scatter_pca(tsne_all, y_subset)
-    # plt.savefig('tsne_all_train_all_classes.png')
-    # time_start = time.time()
+    # T-SNE on all datapoints - takes forever
+    tsne_all = TSNE(random_state=RS, verbose=1).fit_transform(x_subset)
+    scatter_pca(tsne_all, y_subset)
+    plt.savefig('tsne_all_train_'+name+'.png')
+    time_start = time.time()
+    
     # T-SNE w/ PCA 
     pca_50 = PCA(n_components=50)
     pca_result_50 = pca_50.fit_transform(x_subset)
@@ -181,9 +179,11 @@ if __name__ == "__main__":
     print ('Variance explained per principal component: {}'.format(pca_50.explained_variance_ratio_))
     print(f'Total variance explained by 2 components: {sum(pca_50.explained_variance_ratio_)}')
     pca_tsne = TSNE(random_state=RS, verbose=1).fit_transform(pca_result_50)
+    
+    # plot PCA w/ T-SNE
     scatter_pca(pca_tsne, y_subset)
     plt.legend()
-    plt.savefig('tsne_pca_all_classes_subset_legend_test.png')
+    plt.savefig('tsne_pca_'+name+'.png')
 
     tsne_df = pd.DataFrame(columns = ['pca1','pca2','pca3'])
 
@@ -191,19 +191,18 @@ if __name__ == "__main__":
     tsne_df['pca2'] = pca_result_50[:,1]
     tsne_df['pca3'] = pca_result_50[:,2]
 
-
-    #3d plot
-    # ax = plt.figure(figsize=(16,10)).gca(projection='3d')
-    # ax.scatter(
-    #     xs=tsne_df["pca1"], 
-    #     ys=tsne_df["pca2"], 
-    #     zs=tsne_df["pca3], 
-    #     c=y_subset, 
-    #     cmap='tab10'
-    # )
-    # ax.set_xlabel('pca-one')
-    # ax.set_ylabel('pca-two')
-    # ax.set_zlabel('pca-three')
-    # plt.legend()
-    # plt.tight_layout()
-    # plt.savefig('3d_tsne_all_classes_subset.png')
+    #3d plot of PCA w/ T-SNE
+    ax = plt.figure(figsize=(16,10)).gca(projection='3d')
+    ax.scatter(
+        xs=tsne_df["pca1"], 
+        ys=tsne_df["pca2"], 
+        zs=tsne_df["pca3], 
+        c=y_subset, 
+        cmap='tab10'
+        )
+    ax.set_xlabel('pca-one')
+    ax.set_ylabel('pca-two')
+    ax.set_zlabel('pca-three')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig('3d_tsne_'+name+'.png')

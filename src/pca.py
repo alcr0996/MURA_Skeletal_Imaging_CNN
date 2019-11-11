@@ -121,7 +121,7 @@ if __name__ == "__main__":
     # rename_multiple_files(path,obj)
 
     # # create training data
-    train_data = "data/train_images/PCA/train/images/"
+    train_data = "data/train_images/PCA/all_train/images/"
     X_train, y_train = get_data(train_data)
 
     time_start = time.time()
@@ -130,7 +130,7 @@ if __name__ == "__main__":
     y_subset = y_train[0:20000]
 
     pca = PCA(n_components=2)
-    pca_result = pca.fit_transform(x_subset)
+    pca_result = pca.fit_transform(X_train)
 
     print ('PCA done! Time elapsed: {} seconds'.format(time.time()-time_start))
 
@@ -154,18 +154,18 @@ if __name__ == "__main__":
     # taking top two principal components
     top_two_comp = pca_df[['pca1','pca2']]
     # Visualizing the PCA output
-    scatter_pca(top_two_comp.values, y_subset)
-    plt.savefig('pca_2_comp_all_train_subset.png')
+    scatter_pca(top_two_comp.values, y_train)
+    plt.savefig('pca_2_comp_all_train.png')
 
-    # T-SNE on all datapoints
-    tsne_all = TSNE(random_state=RS, verbose=1).fit_transform(x_subset)
-    scatter_pca(tsne_all, y_subset)
-    plt.savefig('tsne_all_train_subset.png')
-    time_start = time.time()
+    # T-SNE on all datapoints - takes way too long
+    # tsne_all = TSNE(random_state=RS, verbose=1).fit_transform(x_subset)
+    # scatter_pca(tsne_all, y_subset)
+    # plt.savefig('tsne_all_train_subset.png')
+    # time_start = time.time()
     # T-SNE w/ PCA 
     pca_50 = PCA(n_components=50)
-    pca_result_50 = pca_50.fit_transform(x_subset)
+    pca_result_50 = pca_50.fit_transform(X_train)
     print ('PCA done! Time elapsed: {} seconds'.format(time.time()-time_start))
     pca_tsne = TSNE(random_state=RS, verbose=1).fit_transform(pca_result_50)
-    scatter_pca(pca_tsne, y_subset)
-    plt.savefig('tsne_pca_all_train_subset.png')
+    scatter_pca(pca_tsne, y_train)
+    plt.savefig('tsne_pca_all_train.png')

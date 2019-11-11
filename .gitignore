@@ -20,3 +20,4 @@
 /simple_class_test
 **/__pycache__
 filter_vis.py
+sigmoid_cnn.py

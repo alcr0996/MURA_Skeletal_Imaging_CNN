@@ -105,7 +105,7 @@ def scatter_pca(x, colors):
     # create a scatter plot.
     f = plt.figure(figsize=(8, 8))
     ax = plt.subplot(aspect='equal')
-    sc = ax.scatter(x[:,0], x[:,1], lw=0, s=40, c=palette[colors.astype(np.int)])
+    sc = ax.scatter(x[:,0], x[:,1], lw=0, s=40, c=palette[colors.astype(np.int)], legend='full')
     plt.xlim(-25, 25)
     plt.ylim(-25, 25)
     ax.axis('off')
@@ -183,7 +183,7 @@ if __name__ == "__main__":
     pca_tsne = TSNE(random_state=RS, verbose=1).fit_transform(pca_result_50)
     scatter_pca(pca_tsne, y_subset)
     plt.legend()
-    plt.savefig('tsne_pca_all_classes_subset.png')
+    plt.savefig('tsne_pca_all_classes_subset_legend_test.png')
 
     tsne_df = pd.DataFrame(columns = ['pca1','pca2','pca3'])
 
@@ -193,17 +193,17 @@ if __name__ == "__main__":
 
 
     #3d plot
-    ax = plt.figure(figsize=(16,10)).gca(projection='3d')
-    ax.scatter(
-        xs=tsne_df["pca1"], 
-        ys=tsne_df["pca2"], 
-        zs=tsne_df["pca3], 
-        c=y_subset, 
-        cmap='tab10'
-    )
-    ax.set_xlabel('pca-one')
-    ax.set_ylabel('pca-two')
-    ax.set_zlabel('pca-three')
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig('3d_tsne_all_classes_subset.png')
+    # ax = plt.figure(figsize=(16,10)).gca(projection='3d')
+    # ax.scatter(
+    #     xs=tsne_df["pca1"], 
+    #     ys=tsne_df["pca2"], 
+    #     zs=tsne_df["pca3], 
+    #     c=y_subset, 
+    #     cmap='tab10'
+    # )
+    # ax.set_xlabel('pca-one')
+    # ax.set_ylabel('pca-two')
+    # ax.set_zlabel('pca-three')
+    # plt.legend()
+    # plt.tight_layout()
+    # plt.savefig('3d_tsne_all_classes_subset.png')

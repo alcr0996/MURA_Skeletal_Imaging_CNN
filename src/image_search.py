@@ -6,7 +6,7 @@ from collections import Counter
 import pandas as pd
 from PIL import Image
 plt.rcParams.update({'font.size': 20})
-# plt.style.use('ggplot')
+plt.style.use('ggplot')
 
 def find_and_sep_data(data, column, search_word, info = 0):
     '''
@@ -44,3 +44,4 @@ def find_rows_with_color(pixels, width, height, color):
     return rows_found
 
 if __name__ == "__main__":
+    pass

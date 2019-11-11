@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
 
 def plot_confusion_matrix(y_true, y_pred,
                           normalize=False,
@@ -15,10 +16,10 @@ def plot_confusion_matrix(y_true, y_pred,
     fig, ax = plt.subplots()
     im = ax.imshow(cm, interpolation='nearest', cmap=cmap)
     ax.figure.colorbar(im, ax=ax)
-    # We want to show all ticks...
+    # Set ticks
     ax.set(xticks=np.arange(cm.shape[1]),
            yticks=np.arange(cm.shape[0]),
-           # ... and label them with the respective list entries
+           # Label ticks with their respective list entries
            title=title,
            ylabel='True label',
            xlabel='Predicted label')

@@ -14,7 +14,9 @@
 /transfer_test
 /Xception_class_96
 /Xception_class_170
-.ipynb_checkpoints
-*ipynb_checkpoints
+.ipynb_checkpoints/
+**/ipynb_checkpoints
 /transfer_test
 /simple_class_test
+**/__pycache__
+filter_vis.py

@@ -64,42 +64,28 @@ Looking good. On to selecting what image size to use. The initial paper provided
 
 <img alt="image size options" src='data/images_for_readme/Image_Rescaled.png' width = 600>
 
-I felt that the 32x32 option wasn't going to cut it for this dataset, but thought I might be able to get away with the 64x64. Regardless, I tried all the options here at one point or another.
+I felt that the 32x32 option wasn't going to cut it for this dataset, but thought I might be able to get away with the 64x64. Regardless, I tried all the options here at one point or another, and eventually settled on 96x96 due to time constraints and performance. Higher resolution images did not make the models perform better, and left me with the suspicion that I would need to dive deeper into transfer learning to really take advantage of the higher resolution photos.
 
 ## Model Testing
 
+After testing all three of my models, I settled on the one below:
+
 <img alt="model summary" src='data/figures/figures_for_readme/sigmoid_cnn_64_64_2model_plot.png' width=500 height=1100>
 
-### Image size 32x32
+### Brief Breakdown of My Model Performance
 
-<img alt="model summary" src='data/figures/second_32_32.png' width=300 height=225/><img alt="model summary" src='data/figures/second_ROC_32_32.png' width=300/>
+<img alt="model summary" src='data/figures/Metrics/my_model_all.png' width=300 height=225/>
 
-### Image size 64x64
+### Image size 96x96
+<img alt="model summary" src='data/figures/Metric Curves/sigmoid_cnn_96_all_classes.png'/>
 
-<img alt="model summary" src='data/figures/second_64.png' width=300 height=225/><img alt="model summary" src='data/figures/second_ROC_64.png' width=300/>
+# Testing with Xception
 
-### Image size 128x128
+I did the most basic transfer learning with Xception by removing the head of the model, and replacing it with a fresh dense layer and a final output layer.
 
-<img alt="model summary" src='data/figures/second_128.png' width=300 height=225/><img alt="model summary" src='data/figures/second_ROC_128.png' width=300/>
+<img alt="Xception 96" src='data/figures/Metric Curves/Xception_9696_all_classes.png'/>
 
-From all this exploration and model testing, I surmised that there was no reason to not go ahead with image size of 64x64. Also note that it took multiple epochs for the model to start learning anything.
-
-As you can see, nothing looks super promising at this point, with all accuracy, loss, and ROC plots looking similar. There was also the issue of tons of False Negative. A typical exampe on the Forearm data would contain 20-30% of the predictions as FN.
-
-# On to the full data set
-
-At this point. I decided to use all positive and negative labels for all bones. I had initially held off on this, but then had the thought that breaks, fractures, and other abnormalities would share similar features, regardless of location.
-
-<img alt="full set" src='data/figures/sigmoid_all_classes_cnn_positive_negative_64x64_prec_acc_40.png' width=600 height=500/>
-
-<img alt="full set" src='data/figures/ROC_all_classes_sigmoid_pos_vs_neg_64_64_alt_thresholds.png' width=600 height=500/>
-
-
-<img alt="worst confusion" src='data/images_for_readme/confusion_accuracy_64_64_64.png' height = 125/>
-
-Things are definitely looking better on the full dataset. Less overfitting, better results in all other metrics. Recall is still an issue, and we saw that once again in the confusion matrix.
-
-At this point, I decided to look at all the False Negatives in the validation set, hoping to find a pattern, and hoping to be able to change the threshold for prediction a bit. What I found, when looking specifically at the 0.40-0.499 prediction thresholds was that there was a near even split of False Negatives and True negatives. This meant that I couldn't get any significant reductions in False Negatives without equally increasing False Positives. While I still consider this a worthwhile tradeoff for this scenario, I decided to hold off on tweaking threshold predictions for now.
+<img alt="Xception 96" src='data/figures/Metrics/both_models_all_classes.png'/>
 
 
 ### Example of a bad False Negative

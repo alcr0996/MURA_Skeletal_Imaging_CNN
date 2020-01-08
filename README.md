@@ -28,27 +28,37 @@ Within each subdirectory for image class, there were directories for each patien
 
 
 # First Glance
-<img alt="jackies response fucked up finger x-ray" src='data/images_for_readme/jackie_wtf.jpeg' width=700>
 
 First I wanted to take a look at the directories, the number of images per directory, and the balance of my classes.
 
-<img alt="Count of training directories" src='data/figures/figures_for_readme/Count_all_directories.png' width = 350><img alt="Neative/Positive Images per Bone" src='data/figures/figures_for_readme/Negative_Positive_Images_per_Bone.png' width = 350>
+<img alt="Count of training directories" src='data/figures/figures_for_readme/Count_all_directories.png' width = 350><img alt="Negative/Positive Images per Bone" src='data/figures/figures_for_readme/bones.png' width = 350 height = 350>
 
 
 The images provided were all over the spectrum in terms of quality. There were images with multiple images, sometimes overlaying each other...
 
-<img alt="hands" src='data/images_for_readme/fucked_fingers.png' height = 406 width = 250><img alt="dark shoulder" src='data/images_for_readme/dark_shoulder.png' width = 250 height = 406><img alt="stretched elbow" src='data/images_for_readme/elbow.png' width = 250 height = 406/>
+<img alt="hands" src='data/images_for_readme/mult_fingers.png' height = 406 width = 250><img alt="dark shoulder" src='data/images_for_readme/dark_shoulder.png' width = 250 height = 406><img alt="stretched elbow" src='data/images_for_readme/image1923.png' width = 250 height = 406/>
 
 
 On the whole, the images were not as contrived as the first example, but their image quality, contrast, brightness, and placement were not very well controlled.
 
+## How to classify the data
+
+I struggled for a long time with how to deal with classifying the data. My concern was that the data was labelled by study, not by image, and that within the same study, one image might show an obvious abnormality, while other images may not, since the view typically changes.
+
+In the end, I self-assessed every image from a negative directory. My logic was that it would be quite easy for me to see obvious mislabelled images that were supposed to be positive, but the same would not be true for positive. I am not a trained Radiologist, and did not feel confident moving images labelled as positive to the negative category. After I scrubbed the data as best I could, moving hundreds of images from the negative to positive category, I then balanced classes.
+
+## Examples of mislabelled images from Negative(normal) studies
+
+<img alt="lungs1" src='data/images_for_readme/obvious_mislabeled_negatives/image16.png' width = 250><img alt="screwed humerus" src='data/images_for_readme/obvious_mislabeled_negatives/image5353.png' width = 250/><img alt="keys" src='data/images_for_readme/obvious_mislabeled_negatives/image827.png' width = 250/>
+
+<img alt="static" src='data/images_for_readme/obvious_mislabeled_negatives/image826.png' width = 250><img alt="dislocated elbow" src='data/images_for_readme/obvious_mislabeled_negatives/image748.png' width = 250/><img alt="screwed elbow" src='data/images_for_readme/obvious_mislabeled_negatives/image195.png' width = 250/>
 
 ## Image Augmentation
 
 From the initial EDA, I started to build my model, but before I got too far, I wanted to make sure my image augmentations were reasonable.
 
 
-<img alt="hand1" src='data/images_for_readme/hand_0_89.jpeg' width = 250><img alt="hand2" src='data/images_for_readme/hand_0_1735.jpeg' width = 250><img alt="hand3" src='data/images_for_readme/hand_0_5052.jpeg' width = 250/>
+<img alt="hand1" src='data/images_for_readme/image_augmentations/hand_0_89.jpeg' width = 250><img alt="hand2" src='data/images_for_readme/image_augmentations/hand_0_1735.jpeg' width = 250><img alt="hand3" src='data/images_for_readme/image_augmentations/hand_0_5052.jpeg' width = 250/>
 
 Looking good. On to selecting what image size to use. The initial paper provided from the data link used images that were 224x224. I certainly wanted to avoid that, so took a quick glance at my options.
 
@@ -56,17 +66,7 @@ Looking good. On to selecting what image size to use. The initial paper provided
 
 I felt that the 32x32 option wasn't going to cut it for this dataset, but thought I might be able to get away with the 64x64. Regardless, I tried all the options here at one point or another.
 
-## How to classify the data
-
-I struggled for a long time with how to deal with classifying the data. My concern was that the data was labelled by study, not by image, and that within the same study, one image might show an obvious abnormality, while other images may not, since the view typically changes.
-
-In the end, I classified every image as positive that came from a positive study, and vice versa for negatives simply because I wanted to start moving forward with the project and I could not think how to control for this issue without going through every directory and taking my best guess.
-
-<img alt="humerus not broke" src='data/images_for_readme/notbrokeelbow.png' width = 300><img alt="broke humerus" src='data/images_for_readme/brokeelbow.png' width = 300/>
-
-## Starting with the Forearm
-
-I initially worked with the Forearm data because it was a smaller dataset that was not terribly balanced. I have been hesitant initially to balance classes with the organization of the files. Using this dataset, I tweaked my model, to find the best trade-off between image size, epochs, layers, and activations. In hindsight, I should have more time with multiple sets of images while tweaking the model.
+## Model Testing
 
 <img alt="model summary" src='data/figures/figures_for_readme/sigmoid_cnn_64_64_2model_plot.png' width=500 height=1100>
 

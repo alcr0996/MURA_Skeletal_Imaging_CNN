@@ -140,8 +140,7 @@ if __name__ == "__main__":
     
     train_path = "../data/train_images/ELBOW"
     val_path = "../data/valid_images/ELBOW"
-    # test_path = "../data/test"
 
     model = CNN_creator(train_path, val_path, model_name='sigmoid_cnn')
 
-    model.param_init(epochs=50, batch_size=50, image_size=(64, 64))
+    model.param_init(epochs=30, batch_size=20, image_size=(96, 96))
